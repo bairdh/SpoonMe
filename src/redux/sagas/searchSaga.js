@@ -3,7 +3,7 @@ import { put, takeLatest } from 'redux-saga/effects';
 
 function* fetchRandomRecipes(action){
     const res = yield axios.get('/api/search/random');
-    yield put({type: 'SET_RANDOM_RECIPES', payload:res.data});
+    yield put({type: 'SET_RANDOM_RECIPES', payload:res.data.recipes});
 }
 
 

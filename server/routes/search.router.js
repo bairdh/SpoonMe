@@ -10,10 +10,10 @@ router.get('/random', (req,res) => {
     //Only sending 1 random result at a time 
     console.log(`Got to the router!`);
     
-    axios.get('https://api.spoonacular.com/recipes/random?number=1&apiKey=' + process.env.SPOON_API)
+    axios.get('https://api.spoonacular.com/recipes/random?number=10&apiKey=' + process.env.SPOON_API)
     .then( result => {
-        console.log(`data:`, result.data);
-        console.log(`data.recipes:`, result.data);
+        // console.log(`ingredints:`, result.data.recipes.extendedIngredients);
+        // console.log(`data.recipes:`, result.data);
         res.send(result.data)
     }).catch(err =>{
         console.log(err);
