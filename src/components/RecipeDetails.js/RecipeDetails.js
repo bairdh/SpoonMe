@@ -10,15 +10,20 @@ class RecipeDetails extends Component{
             <div>
                 <h2>{this.props.location.recipe.title}</h2>
                 <img src={this.props.location.recipe.image} />
-                {this.props.location.recipe.instructions}
+                <ol>
+                    {this.props.location.recipe.analyzedInstructions[0].steps.map( step => (
+                        <li>{step.step}</li>
+                    ))}
+
+                </ol>
                 <div>
                     <p>extendedIngredients:</p>
-                    <ol>
+                    <ul>
                         {this.props.location.recipe.extendedIngredients.map(steps => (
                             // steps.original = amount, unit, name
-                            <li>{steps.amount}{steps.unit} {steps.name}</li>
+                            <li>{steps.original}</li>
                         ))}
-                    </ol>
+                    </ul>
                 </div>
             </div>
         ) // return

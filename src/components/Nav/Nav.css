@@ -32,6 +32,11 @@
   background-color: #4384b9;
 }
 
+.navSearch{
+  float: left;
+  padding-top: 20px;
+}
+
 .nav-right {
   float: right;
 }

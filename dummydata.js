@@ -1,3 +1,4 @@
+// ---------- RANDOM ----------
 data: {
     recipes: [
         {
@@ -94,3 +95,57 @@ data.recipes: [
         spoonacularSourceUrl: 'https://spoonacular.com/meyer-lemon-cheesecake-651757'
     }
 ]
+
+
+// ----------- SEARCH ---------------
+DATA: {
+    results: [
+        {
+            vegetarian: true,
+            vegan: false,
+            glutenFree: true,
+            dairyFree: false,
+            veryHealthy: false,
+            cheap: false,
+            veryPopular: false,
+            sustainable: false,
+            weightWatcherSmartPoints: 11,
+            gaps: 'no',
+            lowFodmap: false,
+            aggregateLikes: 15,
+            spoonacularScore: 50,
+            healthScore: 7,
+            creditsText: 'Love and Olive Oil',
+            sourceName: 'Love and Olive Oil',
+            pricePerServing: 547.8,
+            // RECIPE INGREDIENTS
+            extendedIngredients: [Array],
+            id: 57067,
+            // RECIPE TITLE
+            title: 'Fresh Figs With Goat Cheese And Peppered Honey',
+            readyInMinutes: 45,
+            servings: 2,
+            sourceUrl: 'http://www.loveandoliveoil.com/2009/09/fresh-figs-with-goat-cheese-and-peppered-honey.html',
+            // RECIPE IMAGE
+            image: 'https://spoonacular.com/recipeImages/57067-312x231.jpg',
+            imageType: 'jpg',
+            summary: 'Fresh Figs With Goat Cheese And Peppered Honey might be just the side dish you are searching for. Watching your figure? This gluten free, primal, and vegetarian recipe has <b>427 calories</b>, <b>8g of protein</b>, and <b>7g of fat</b> per serving. This recipe serves 2 and costs $5.48 per serving. 15 people have made this recipe and would make it again. A mixture of pepper, figs, goat cheese, and a handful of other ingredients are all it takes to make this recipe so delicious. From preparation to the plate, this recipe takes approximately <b>45 minutes</b>. All things considered, we decided this recipe <b>deserves a spoonacular score of 54%</b>. This score is solid. Try <a href="https://spoonacular.com/recipes/fresh-figs-with-goat-cheese-and-peppered-honey-57113">Fresh Figs with Goat Cheese and Peppered Honey</a>, <a href="https://spoonacular.com/recipes/honey-peppered-goat-cheese-with-fig-balsamic-drizzle-57466">Honey-Peppered Goat Cheese with Fig Balsamic Drizzle</a>, and <a href="https://spoonacular.com/recipes/fresh-figs-with-bacon-and-goat-cheese-57143">Fresh Figs with Bacon and Goat Cheese</a> for similar recipes.',
+            cuisines: [],
+            dishTypes: [Array],
+            diets: [Array],
+            occasions: [],
+            winePairing: {},
+            // RECIPE DIRCETIONS
+            analyzedInstructions: [Array],
+            usedIngredientCount: 0,
+            missedIngredientCount: 3,
+            missedIngredients: [Array],
+            likes: 0,
+            usedIngredients: [],
+            unusedIngredients: []
+        }
+    ],
+        offset: 0,
+            number: 1,
+                totalResults: 23046
+}

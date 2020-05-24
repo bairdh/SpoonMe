@@ -1,10 +1,10 @@
-const setRandom = (state = [], action) => {
+const setRecipes = (state = [], action) => {
     switch(action.type){
-        case 'SET_RANDOM_RECIPES':
+        case 'SET_RECIPES':
             return action.payload;
         default:
             return state;
     }
 }
 
-export default setRandom;
+export default setRecipes;
