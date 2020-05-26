@@ -26,18 +26,15 @@ const Nav = (props) => {
           <Button variant="outlined" color="primary" onClick={() => handleClick(search, props)}>Search</Button>
         </Link>
       </div>
-      <Link className="nav-link" to="/home">
+      <Link className="nav-link" to="/login">
         {/* Show this link if they are logged in or not,
         but call this link 'Home' if they are logged in,
         and call this link 'Login / Register' if they are not */}
-        {props.user.id ? 'Home' : 'Login / Register'}
+        {!props.user.id ? 'Login / Register': 'Profile'}
       </Link>
       {/* Show the link to the info page and the logout button if the user is logged in */}
       {props.user.id && (
         <>
-          <Link className="nav-link" to="/info">
-            Info Page
-          </Link>
           <LogOutButton className="nav-link"/>
         </>
       )}

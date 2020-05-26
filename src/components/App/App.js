@@ -30,7 +30,7 @@ class App extends Component {
             This is a route anyone can see, no login necessary */}
             <Route
               exact
-              path="/about"
+              path="/home"
               component={Search}
             />
             {/* For protected routes, the view could show one of several things on the same route.
@@ -39,7 +39,7 @@ class App extends Component {
             Even though it seems like they are different pages, the user is always on localhost:3000/home */}
             <ProtectedRoute
               exact
-              path="/home"
+              path="/login"
               component={UserPage}
             />
             <Route

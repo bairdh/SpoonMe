@@ -1,17 +1,28 @@
 import React, { Component } from "react";
-import { useLocation } from "react-router-dom";
+import { Button } from "@material-ui/core";
+import { connect } from "react-redux";
 
 class RecipeDetails extends Component{
 
+    state = {
+        recipe: this.props.location.recipe
+    }
+
+    handleSave = () => {
+        this.props.dispatch({type: 'SAVE_USER_RECIPE', payload: this.state})
+    }
+
     render(){
-        console.log(this.props.location.recipe);
+        console.log(this.state.recipe);
         
         return(
             <div>
-                <h2>{this.props.location.recipe.title}</h2>
-                <img src={this.props.location.recipe.image} />
+                <h2>{this.state.recipe.title}</h2>
+                <Button onClick={this.handleSave}>save recipe</Button>
+                <br/>
+                <img src={this.state.recipe.image} />
                 <ol>
-                    {this.props.location.recipe.analyzedInstructions[0].steps.map( step => (
+                    {this.state.recipe.analyzedInstructions[0].steps.map( step => (
                         <li>{step.step}</li>
                     ))}
 
@@ -19,7 +30,7 @@ class RecipeDetails extends Component{
                 <div>
                     <p>extendedIngredients:</p>
                     <ul>
-                        {this.props.location.recipe.extendedIngredients.map(steps => (
+                        {this.state.recipe.extendedIngredients.map(steps => (
                             // steps.original = amount, unit, name
                             <li>{steps.original}</li>
                         ))}
@@ -30,5 +41,6 @@ class RecipeDetails extends Component{
     } // render
 } // class
 
+const ReduxToProps = data => ({data});
 
-export default RecipeDetails;
+export default connect(ReduxToProps)(RecipeDetails);
