@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Button } from "@material-ui/core";
+import { Button, Box } from "@material-ui/core";
 import { connect } from "react-redux";
 
 class RecipeDetails extends Component{
@@ -13,12 +13,23 @@ class RecipeDetails extends Component{
     }
 
     render(){
-        console.log(this.state.recipe);
+        console.log(this.props.data.user);
+
+       let saveButton;
+
+        if (this.props.data.user.id) {
+             saveButton = (<Box>
+                <Button onClick={this.handleSave}>save recipe</Button>
+            </Box>)
+        }else{
+            saveButton = (<Box></Box>)
+        }
+
         
         return(
             <div>
                 <h2>{this.state.recipe.title}</h2>
-                <Button onClick={this.handleSave}>save recipe</Button>
+                {saveButton}
                 <br/>
                 <img src={this.state.recipe.image} />
                 <ol>
