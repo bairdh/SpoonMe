@@ -1,5 +1,6 @@
 // ---------- RANDOM ----------
-let recipe = { "recipes": [
+let recipe = {
+    "recipes": [
         {
             "vegetarian": true,
             "vegan": false,

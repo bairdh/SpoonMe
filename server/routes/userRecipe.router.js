@@ -10,8 +10,8 @@ router.post('/', async (req, res) => {
         const sendRecipe = await pool.connect();
         try{
             await sendRecipe.query('BEGIN');
-            let query = `INSERT INTO recipe("name", "image")` + `VALUES($1, $2) RETURNING "id";`;
-            const values = [recipe.title, recipe.image];
+            let query = `INSERT INTO recipe("name", "image", user_id)` + `VALUES($1, $2, $3) RETURNING "id";`;
+            const values = [recipe.title, recipe.image, req.user.id];
             // sending Recipe POST
             const recipeResult = await sendRecipe.query(query,values);
             // GETTING Recipe id
@@ -33,7 +33,29 @@ router.post('/', async (req, res) => {
         } finally{
             sendRecipe.release();
         }
-})
+});
 
+
+router.get('/', (req,res) => {
+    console.log(`In GET USER RECIPES! Ive Changed`);
+    let userId = req.user.id;
+    let query = `
+    SELECT r.id, r.name, r.image, r.notes, array_agg(DISTINCT(i.ingredient)) AS ingredients, array_agg(DISTINCT(d.direction)) AS directions
+    FROM direction AS d
+    JOIN recipe AS r
+    ON d.recipe_id = r.id
+    JOIN ingredient AS i
+    ON r.id = i.recipe_id
+    WHERE r.user_id = $1
+    GROUP BY r.id;`;
+
+    pool.query(query, [userId]).then(results => {
+        console.log(results.rows);
+        res.send(results.rows)
+    }).catch(err => {
+        console.log(err);
+        res.sendStatus(500);
+    })
+});
 
 module.exports = router;

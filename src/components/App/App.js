@@ -12,6 +12,8 @@ import Search from '../Search/Search';
 
 import './App.css';
 import RecipeDetails from '../RecipeDetails.js/RecipeDetails';
+import UserRecipeDetails from '../UserRecipeDetails/UserRecipeDetails';
+import CreateRecipe from '../CreateRecipe/CreateRecipe';
 
 class App extends Component {
   componentDidMount () {
@@ -45,6 +47,15 @@ class App extends Component {
             <Route
             path="/recipeDetails"
             component={RecipeDetails} />
+
+            <ProtectedRoute
+            path="/userRecipeDetails"
+            component={UserRecipeDetails} />
+
+            <ProtectedRoute 
+              path="/createRecipe"
+            component={CreateRecipe}/>
+
             {/* This works the same as the other protected route, except that if the user is logged in,
             they will see the info page instead. */}
             <ProtectedRoute
