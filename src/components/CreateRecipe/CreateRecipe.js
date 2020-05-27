@@ -44,8 +44,8 @@ class CreateRecipe extends Component{
     editOneDirection = (key) => {
         // create new copy of direction list 
         // but cut out the old step and replace it with the new one
-        const newList = this.state.directions.splice(key, 1, this.state.direction);
-        console.log(key);
+        const newList = this.state.directions
+        newList.splice(key, 1, this.state.direction);
         // replace the old direction list with the new one in state
         this.setState({
             directions: [...newList],
@@ -55,19 +55,36 @@ class CreateRecipe extends Component{
         })
     }
 
-    removeListItem = (key) => {
+    editOneIngredient = (key) => {
+        // create new copy of ingredient list 
+        // but cut out the old step and replace it with the new one
+        const newList = this.state.ingredients
+        newList.splice(key, 1, this.state.ingredient);
+        // replace the old ingredient list with the new one in state
+        this.setState({
+            ingredients: [...newList],
+            edit:{
+                isTrue: !this.state.edit.isTrue
+            }
+        })
+    }
+
+    removeDirectionListItem = (key) => {
         let newList = this.state.directions;
-        console.log(newList);
         newList.splice(key, 1);
         this.setState({
             directions: [...newList]
         })
     }
+    removeIngredientListItem = (key) => {
+        let newList = this.state.ingredients;
+        newList.splice(key, 1);
+        this.setState({
+            ingredients: [...newList]
+        })
+    }
     
     render(){
-
-        // console.log(this.state.directions);
-        // console.log(this.state);
         return(
             <Box>
                 <Typography variant="h3">Create Recipe</Typography>
@@ -79,9 +96,21 @@ class CreateRecipe extends Component{
                     <Box>
                         <Typography>Ingredients:</Typography>
                         <ul>
-                            {this.state.ingredients.map((item, i) => (
-                                <li key={i}>{item}</li>
-                            ))}
+                            {this.state.ingredients.map((item, i) => {
+                                if (this.state.edit.isTrue && this.state.edit.key === i) {
+                                    return (<Box key={i}>
+                                        <TextField onChange={event => this.handleChange(event, "ingredient")}
+                                            defaultValue={item} />
+                                        <Button onClick={() => this.editOneIngredient(i)}>Save Changes</Button>
+                                    </Box>)
+                                }
+                                else {
+                                    return (<li key={i}>{item}
+                                        <EditOutlinedIcon fontSize="small" onClick={() => this.edit(i)} />
+                                        <RemoveCircleOutlineIcon fontSize="small" onClick={() => this.removeIngredientListItem(i)} /> </li>)
+                                }
+
+                            })}
                         </ul>
 
                     </Box> {/* End Ingredient List */}
@@ -109,7 +138,7 @@ class CreateRecipe extends Component{
                                 else{
                                    return( <li key={i}>{step} 
                                     <EditOutlinedIcon fontSize="small" onClick={() => this.edit(i)}/>
-                                    <RemoveCircleOutlineIcon fontSize="small" onClick={()=> this.removeListItem(i)}/> </li>)
+                                       <RemoveCircleOutlineIcon fontSize="small" onClick={() => this.removeDirectionListItem(i)}/> </li>)
                                 }
 
                             })}
