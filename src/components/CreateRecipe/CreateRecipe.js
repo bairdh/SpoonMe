@@ -42,17 +42,25 @@ class CreateRecipe extends Component{
     }
 
     editOneDirection = (key) => {
-        const newItem = this.state.directions;
-        console.log(newItem);
-        newItem.splice(key, 1, this.state.direction);
-        console.log(newItem);
-        // console.log(this.state.directions);
+        // create new copy of direction list 
+        // but cut out the old step and replace it with the new one
+        const newList = this.state.directions.splice(key, 1, this.state.direction);
         console.log(key);
+        // replace the old direction list with the new one in state
         this.setState({
-            directions: [...newItem],
+            directions: [...newList],
             edit:{
                 isTrue: !this.state.edit.isTrue
             }
+        })
+    }
+
+    removeListItem = (key) => {
+        let newList = this.state.directions;
+        console.log(newList);
+        newList.splice(key, 1);
+        this.setState({
+            directions: [...newList]
         })
     }
     
@@ -99,7 +107,9 @@ class CreateRecipe extends Component{
                                     </Box>)
                                 }
                                 else{
-                                   return( <li key={i}>{step} < EditOutlinedIcon fontSize="small" onClick={event => this.edit(i)}/><RemoveCircleOutlineIcon fontSize="small"/> </li>)
+                                   return( <li key={i}>{step} 
+                                    <EditOutlinedIcon fontSize="small" onClick={() => this.edit(i)}/>
+                                    <RemoveCircleOutlineIcon fontSize="small" onClick={()=> this.removeListItem(i)}/> </li>)
                                 }
 
                             })}
