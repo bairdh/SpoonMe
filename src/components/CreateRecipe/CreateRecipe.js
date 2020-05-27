@@ -2,16 +2,18 @@ import React, { Component } from "react";
 import { Box, Typography, TextField, Button } from "@material-ui/core";
 import RemoveCircleOutlineIcon from '@material-ui/icons/RemoveCircleOutline';
 import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
+import { connect } from "react-redux";
 
 class CreateRecipe extends Component{
 
     state = {
-        title: '',
+        name: '',
         image: '',
         ingredient: '',
         direction: '',
         ingredients: [],
         directions: [],
+        notes: '',
         edit: {isTrue:false, key: ''}
     }
 
@@ -83,13 +85,39 @@ class CreateRecipe extends Component{
             ingredients: [...newList]
         })
     }
+
+    sendRecipe = () =>{
+        let recipe = {
+            name: this.state.name,
+            image: this.state.image,
+            ingredients: this.state.ingredients,
+            directions: this.state.directions,
+            notes: this.state.notes
+        };
+        this.props.dispatch({type:'CREATE_RECIPE', payload: recipe});
+        this.props.history.push({pathname: '/login'});
+    }
     
+    goToUserPage = () => {
+        this.props.history.push({pathname:'/login'});
+    }
     render(){
+        let image;
+
+        // toggles input for ingredients/directions List
+        if(this.state.image !== ''){
+            image =(<img src={this.state.image}/>)
+        }else{
+            image= <Box></Box>
+        }
+
         return(
-            <Box>
+            <Box >
+                <Button variant="outlined" onClick={this.goToUserPage}>Back to User Recipes</Button>
                 <Typography variant="h3">Create Recipe</Typography>
-                <TextField onChange={event => this.handleChange(event, "title")} variant="standard"
-                    label="Title"/>
+                <TextField onChange={event => this.handleChange(event, "name")} variant="standard"
+                    label="Name"/>
+                    {image}
                 <TextField onChange={event => this.handleChange(event, "image")}variant="standard"
                     label="Image"/>
                 <Box>
@@ -109,10 +137,8 @@ class CreateRecipe extends Component{
                                         <EditOutlinedIcon fontSize="small" onClick={() => this.edit(i)} />
                                         <RemoveCircleOutlineIcon fontSize="small" onClick={() => this.removeIngredientListItem(i)} /> </li>)
                                 }
-
                             })}
                         </ul>
-
                     </Box> {/* End Ingredient List */}
                     <TextField onChange={event => this.handleChange(event, "ingredient")}
                         ref="ingredient" 
@@ -128,17 +154,17 @@ class CreateRecipe extends Component{
                         <ol>
                             {this.state.directions.map((step, i) => {
                                 if(this.state.edit.isTrue && this.state.edit.key === i){
-                                   return( <Box key={i}>
-                                       <TextField onChange={event => this.handleChange(event, "direction")}
+                                    return( <Box key={i}>
+                                        <TextField onChange={event => this.handleChange(event, "direction")}
                                             label='Step'
                                             defaultValue={step}/>
-                                       <Button onClick={()=>this.editOneDirection(i)}>Save Changes</Button>
+                                        <Button onClick={()=>this.editOneDirection(i)}>Save Changes</Button>
                                     </Box>)
                                 }
                                 else{
-                                   return( <li key={i}>{step} 
+                                    return( <li key={i}>{step} 
                                     <EditOutlinedIcon fontSize="small" onClick={() => this.edit(i)}/>
-                                       <RemoveCircleOutlineIcon fontSize="small" onClick={() => this.removeDirectionListItem(i)}/> </li>)
+                                        <RemoveCircleOutlineIcon fontSize="small" onClick={() => this.removeDirectionListItem(i)}/> </li>)
                                 }
 
                             })}
@@ -153,10 +179,16 @@ class CreateRecipe extends Component{
                         color="secondary">Add Direction</Button>
                         <br/>
                 </Box>  {/* End Direction Box */}
-                <Button variant="outlined">Submit all</Button>
+
+                <TextField  variant="outlined"
+                        multiline={true}
+                        label="Notes"/>
+                <Button onClick={this.sendRecipe} variant="outlined">Submit all</Button>
             </Box>
         ) // return
     } // render
 } // class
 
-export default CreateRecipe;
+const reduxToProps = data => ({data});
+
+export default connect(reduxToProps)(CreateRecipe);

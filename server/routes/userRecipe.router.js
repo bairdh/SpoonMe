@@ -10,7 +10,7 @@ router.post('/', async (req, res) => {
         const sendRecipe = await pool.connect();
         try{
             await sendRecipe.query('BEGIN');
-            let query = `INSERT INTO recipe("name", "image", user_id)` + `VALUES($1, $2, $3) RETURNING "id";`;
+            let query = `INSERT INTO recipe("name", "image", user_id) VALUES($1, $2, $3) RETURNING "id";`;
             const values = [recipe.title, recipe.image, req.user.id];
             // sending Recipe POST
             const recipeResult = await sendRecipe.query(query,values);
@@ -50,7 +50,7 @@ router.get('/', (req,res) => {
     GROUP BY r.id;`;
 
     pool.query(query, [userId]).then(results => {
-        console.log(results.rows);
+        // console.log(results.rows);
         res.send(results.rows)
     }).catch(err => {
         console.log(err);
@@ -58,4 +58,35 @@ router.get('/', (req,res) => {
     })
 });
 
+router.post('/create', async (req, res) => {
+    console.log(`In create Recipe`);
+    
+    let recipe = req.body;
+    const createRecipe = await pool.connect();
+    try{
+        await createRecipe.query('BEGIN');
+        let query = `
+        INSERT INTO recipe("name", "image", "notes", "user_id")
+        VALUES ($1, $2, $3, $4) RETURNING "id";`;
+        const result = await createRecipe.query(query, [recipe.name, recipe.image, recipe.notes, req.user.id]);
+        const newRecipeId = result.rows[0].id;
+        console.log(result.rows[0]);
+        
+        await Promise.all(recipe.ingredients.map(item => {
+            let = subQuery = `INSERT INTO ingredient("ingredient", "recipe_id") VALUES($1, $2);`;
+            createRecipe.query(subQuery, [item, newRecipeId]);
+        }))
+        await Promise.all(recipe.directions.map((step, i) => {
+            let subQuery = `INSERT INTO direction("step", "direction", "recipe_id") VALUES($1, $2, $3)`
+            createRecipe.query(subQuery, [(i + 1), step, newRecipeId]);
+        }))
+        await createRecipe.query('COMMIT');
+        res.sendStatus(200);
+    }catch(err){
+        await createRecipe.query('ROLLBACK');
+        throw err;
+    }finally{
+        createRecipe.release();
+    }
+})
 module.exports = router;
