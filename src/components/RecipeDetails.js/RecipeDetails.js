@@ -19,7 +19,7 @@ class RecipeDetails extends Component{
 
         if (this.props.data.user.id) {
              saveButton = (<Box>
-                <Button onClick={this.handleSave}>save recipe</Button>
+                <Button variant="outlined" onClick={this.handleSave}>save recipe</Button>
             </Box>)
         }else{
             saveButton = (<Box></Box>)

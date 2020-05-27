@@ -43,3 +43,14 @@ CREATE TABLE direction(
     recipe_id INT NOT NULL,
     FOREIGN KEY (recipe_id) REFERENCES recipe(id)
 );
+
+
+INSERT INTO "songs" ("rank", "artist", "track", "published")
+VALUES
+(357, 'Wonderwall', 'Oasis', '1-1-1996'),
+(102, 'Under the bridge', 'Red Hot Chili Peppers', '1-1-1992');
+
+create recipe first and then ingredient and last direction
+
+INSERT INTO "recipe" (name, image)
+INSERT INTO "ingredient" (ingredient, recipe_id)
