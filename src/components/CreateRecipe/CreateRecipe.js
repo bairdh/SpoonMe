@@ -11,7 +11,8 @@ class CreateRecipe extends Component{
         ingredient: '',
         direction: '',
         ingredients: [],
-        directions: []
+        directions: [],
+        edit: {isTrue:false, key: ''}
     }
 
     handleChange = (event, prop) => {
@@ -32,7 +33,33 @@ class CreateRecipe extends Component{
         })
     }
 
+    edit = (index) =>{
+        this.setState({
+            edit: {
+                isTrue: !this.state.edit.isTrue,
+                key: index}
+        })
+    }
+
+    editOneDirection = (key) => {
+        const newItem = this.state.directions;
+        console.log(newItem);
+        newItem.splice(key, 1, this.state.direction);
+        console.log(newItem);
+        // console.log(this.state.directions);
+        console.log(key);
+        this.setState({
+            directions: [...newItem],
+            edit:{
+                isTrue: !this.state.edit.isTrue
+            }
+        })
+    }
+    
     render(){
+
+        // console.log(this.state.directions);
+        // console.log(this.state);
         return(
             <Box>
                 <Typography variant="h3">Create Recipe</Typography>
@@ -62,9 +89,20 @@ class CreateRecipe extends Component{
                     <Box>
                         <Typography>Directions:</Typography>
                         <ol>
-                            {this.state.directions.map((step, i) => (
-                                <li key={i}>{step} < EditOutlinedIcon fontSize="small" onClick={}/><RemoveCircleOutlineIcon fontSize="small"/> </li>
-                            ))}
+                            {this.state.directions.map((step, i) => {
+                                if(this.state.edit.isTrue && this.state.edit.key === i){
+                                   return( <Box key={i}>
+                                       <TextField onChange={event => this.handleChange(event, "direction")}
+                                            label='Step'
+                                            defaultValue={step}/>
+                                       <Button onClick={()=>this.editOneDirection(i)}>Save Changes</Button>
+                                    </Box>)
+                                }
+                                else{
+                                   return( <li key={i}>{step} < EditOutlinedIcon fontSize="small" onClick={event => this.edit(i)}/><RemoveCircleOutlineIcon fontSize="small"/> </li>)
+                                }
+
+                            })}
                         </ol>
                     </Box> {/* End Direction List */}
                     <TextField onChange={event => this.handleChange(event, "direction")} 
