@@ -11,14 +11,37 @@ function* fetchUserRecipes(action){
     yield put({type:"SET_USER_RECIPES", payload: res.data});
 }
 
+function* fetchOneRecipe(action){
+    const res = yield axios.get(`/api/userRecipe/${action.payload}`);
+    yield put({type:"SET_ONE_RECIPE", payload: res.data[0]});
+}
+
 function* createRecipe(action){
     yield axios.post(`/api/userRecipe/create`, action.payload);
+}
+
+function* editUserRecipe(action){
+    yield axios.put('/api/userRecipe/edit', action.payload);
+}
+
+function* deleteItem(action){
+    let res = yield axios.put(`/api/userRecipe/deleteItem/${action.payload.item}/${action.payload.key}`);
+    console.log(res.data);
+    yield put({type: "SET_ONE_RECIPE", payload: ''})
+}
+
+function* addItem(action){
+    let res = yield axios.post(`api/userRecipe/addItem`, action.payload);
 }
 
 function* userRecipeSaga() {
     yield takeLatest('SAVE_USER_RECIPE', saveUserRecipe);
     yield takeLatest('FETCH_USER_RECIPES', fetchUserRecipes);
+    yield takeLatest('FETCH_ONE_RECIPE', fetchOneRecipe);
     yield takeLatest('CREATE_RECIPE', createRecipe);
+    yield takeLatest('EDIT_USER_RECIPE', editUserRecipe);
+    yield takeLatest('DELETE_ITEM', deleteItem);
+    yield takeLatest('ADD_ITEM', addItem);
 }
 
 export default userRecipeSaga;

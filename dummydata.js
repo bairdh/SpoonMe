@@ -258,6 +258,23 @@ let recipe = {
         }]
 
 }
+
+
+let text ={
+    "id": 20,
+    "name": "geerferf",
+    "image": "https://hips.hearstapps.com/hmg-prod.s3.amazonaws.com/images/grilled-cheese-horizontal-jpg-1522266016.jpg?resize=980:*",
+    "notes": null,
+    "ingredients":
+    [
+        [81,"fwefwef"]
+    ],
+        "directions":
+    [
+        [1, "vxbheg"]
+    ]
+}
+
 // ------------ ScrapPaper ---------------
 
 app.post('/contact', (req, res) => {

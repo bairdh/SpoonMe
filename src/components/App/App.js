@@ -49,7 +49,7 @@ class App extends Component {
             component={RecipeDetails} />
 
             <ProtectedRoute
-            path="/userRecipeDetails"
+            path="/userRecipeDetails/:id"
             component={UserRecipeDetails} />
 
             <ProtectedRoute 

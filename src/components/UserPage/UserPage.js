@@ -15,14 +15,16 @@ class UserPage extends Component {
   };
 
   sendToUserRecipeDetails = (recipe) => {
-    this.props.history.push({ pathname:'/userRecipeDetails', recipe})
+    this.props.history.push(`/userRecipeDetails/${recipe.id}`)
+    // this.props.dispatch({ type: 'FETCH_ONE_RECIPE', payload: recipe.id});
+
   }
 
   sendToCreateRecipe = () =>{
     this.props.history.push({pathname:'/createRecipe'});
   }
 
-    render(){
+    render(){      
       return(   
       <Box>
         <Box>
@@ -30,7 +32,7 @@ class UserPage extends Component {
           <Button variant="outlined" color="secondary" onClick={(event)=>this.sendToCreateRecipe()}>Create New Recipe</Button>
         </Box>
          {this.props.data.setUserRecipes.map(recipe => (
-           <Card className="card" onClick={(event) => this.sendToUserRecipeDetails(recipe)}>
+           <Card key={recipe.id} className="card" onClick={(event) => this.sendToUserRecipeDetails(recipe)}>
              <CardMedia className="cardImage" component="img" src={recipe.image}></CardMedia>
              <CardContent>
                <Typography>{recipe.name}</Typography>

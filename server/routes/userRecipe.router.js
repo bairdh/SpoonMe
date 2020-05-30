@@ -58,6 +58,32 @@ router.get('/', (req,res) => {
     })
 });
 
+router.get('/:id', (req, res) =>{
+    console.log('In get One Recipe!')
+
+    let query = `
+    SELECT r.id, r.name, r.image, r.notes, json_agg(DISTINCT jsonb_build_object('id', i.id, 'ingredient', i.ingredient)) AS ingredients, json_agg(DISTINCT jsonb_build_object('id', d.id, 'direction', d.direction)) AS directions
+    FROM ingredient AS i
+    JOIN recipe AS r
+    ON i.recipe_id = r.id
+    JOIN direction AS d
+    ON r.id = d.recipe_id
+    WHERE r.id = $1
+    GROUP BY r.id;`
+
+    let id = req.params.id;
+
+    pool.query(query, [id]).then(result => {
+        // console.log(result.rows);
+        // console.log(JSON.stringify(result.rows));
+        
+        res.send(result.rows)
+    }).catch(err=>{
+        console.log(err);
+        res.sendStatus(500);
+    })
+})
+
 router.post('/create', async (req, res) => {
     console.log(`In create Recipe`);
     
@@ -77,7 +103,7 @@ router.post('/create', async (req, res) => {
             createRecipe.query(subQuery, [item, newRecipeId]);
         }))
         await Promise.all(recipe.directions.map((step, i) => {
-            let subQuery = `INSERT INTO direction("step", "direction", "recipe_id") VALUES($1, $2, $3)`
+            let subQuery = `INSERT INTO direction("step", "direction", "recipe_id") VALUES($1, $2, $3);`
             createRecipe.query(subQuery, [(i + 1), step, newRecipeId]);
         }))
         await createRecipe.query('COMMIT');
@@ -89,4 +115,64 @@ router.post('/create', async (req, res) => {
         createRecipe.release();
     }
 })
+
+router.put(`/deleteItem/:item/:id`, (req, res) => {
+    let id = req.params.id;
+    let item = req.params.item;
+    let query;
+    console.log(`In delete Ingredients!`, item);
+
+    if(item === 'ingredient'){
+        query = `
+        DELETE FROM ingredient
+        WHERE "id" = $1
+        RETURNING recipe_id;`;
+    }
+    else if( item === 'direction'){
+        query = `
+        DELETE FROM direction
+        WHERE "id" = $1
+        RETURNING recipe_id;`;
+    }
+
+    pool.query(query, [id]).then(result =>{
+        res.send(result.rows[0].recipe_id);
+        console.log(result.rows[0].recipe_id);
+        
+    }).catch(err => {
+        console.log(err);
+        res.sendStatus(500);
+    }) 
+})
+router.post('/addItem', (req, res) =>{
+    console.log(`In Add Item:`, req.body);
+    
+    let item = req.body.item;
+    let recipeId = req.body.recipe;
+    let query;
+    let values = [];
+
+    if(item === "ingredient"){
+        query = `
+        INSERT INTO ingredient("ingredient", "recipe_id")
+        VALUES($1, $2);`;
+
+        values = [req.body.ingredient, recipeId];
+    }
+    else if(item === "direction"){
+        query = `
+        INSERT INTO direction("step", "direction", "recipe_id")
+        VALUES($1, $2, $3);`;
+
+        values= [req.body.step, req.body.direction, recipeId];
+    }
+    pool.query(query, values).then(result => {
+        res.sendStatus(201);
+    }).catch(err => {
+        console.log(err);
+        res.sendStatus(500);
+    })
+})
+
+
 module.exports = router;
