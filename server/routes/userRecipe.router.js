@@ -128,7 +128,7 @@ router.put(`/deleteItem/:item/:id`, (req, res) => {
         WHERE "id" = $1
         RETURNING recipe_id;`;
     }
-    else if( item === 'direction'){
+    else if (item === 'direction'){
         query = `
         DELETE FROM direction
         WHERE "id" = $1
@@ -136,8 +136,8 @@ router.put(`/deleteItem/:item/:id`, (req, res) => {
     }
 
     pool.query(query, [id]).then(result =>{
-        res.send(result.rows[0].recipe_id);
-        console.log(result.rows[0].recipe_id);
+        res.send(result.rows[0]);
+        console.log(result.rows[0]);
         
     }).catch(err => {
         console.log(err);
@@ -155,19 +155,22 @@ router.post('/addItem', (req, res) =>{
     if(item === "ingredient"){
         query = `
         INSERT INTO ingredient("ingredient", "recipe_id")
-        VALUES($1, $2);`;
+        VALUES($1, $2)
+        RETURNING recipe_id;`;
 
         values = [req.body.ingredient, recipeId];
     }
-    else if(item === "direction"){
+    else if (item === "direction"){
         query = `
         INSERT INTO direction("step", "direction", "recipe_id")
-        VALUES($1, $2, $3);`;
+        VALUES($1, $2, $3)
+        RETURNING recipe_id;`;
 
         values= [req.body.step, req.body.direction, recipeId];
     }
     pool.query(query, values).then(result => {
-        res.sendStatus(201);
+        console.log(`returning ID:`, result.rows[0].recipe_id);
+        res.send(result.rows[0]);
     }).catch(err => {
         console.log(err);
         res.sendStatus(500);

@@ -27,11 +27,12 @@ function* editUserRecipe(action){
 function* deleteItem(action){
     let res = yield axios.put(`/api/userRecipe/deleteItem/${action.payload.item}/${action.payload.key}`);
     console.log(res.data);
-    yield put({type: "SET_ONE_RECIPE", payload: ''})
+    yield put({type: "FETCH_ONE_RECIPE", payload: res.data.recipe_id})
 }
 
 function* addItem(action){
     let res = yield axios.post(`api/userRecipe/addItem`, action.payload);
+    yield put({ type: "FETCH_ONE_RECIPE", payload: res.data.recipe_id })
 }
 
 function* userRecipeSaga() {

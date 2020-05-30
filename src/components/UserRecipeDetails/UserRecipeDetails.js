@@ -26,10 +26,18 @@ class UserRecipeDetails extends Component{
         this.props.dispatch({ type: 'FETCH_ONE_RECIPE', payload: this.props.match.params.id});
     }
 
-    componentDidUpdate(oldProps){        
+    componentDidUpdate(oldProps){       
         if(oldProps.data.setOneRecipe.ingredients === undefined && this.props.data.setOneRecipe.ingredients){
             this.setState({
-                // ingredients: this.props.data.setOneRecipe.ingredients,
+                ingredients: this.props.data.setOneRecipe.ingredients,
+                directions: this.props.data.setOneRecipe.directions,
+                notes: this.props.data.setOneRecipe.notes
+            })
+        }
+
+        if(oldProps.data.setOneRecipe !== this.props.data.setOneRecipe){
+            this.setState({
+                ingredients: this.props.data.setOneRecipe.ingredients,
                 directions: this.props.data.setOneRecipe.directions,
                 notes: this.props.data.setOneRecipe.notes
             })
@@ -75,17 +83,11 @@ class UserRecipeDetails extends Component{
     }
 
     editOneIngredient = (key) => {
-        // create new copy of ingredient list 
-        // but cut out the old step and replace it with the new one
-        const newList = this.state.ingredients
-        newList.splice(key, 1, this.state.ingredient);
-        // replace the old ingredient list with the new one in state
-        this.setState({
-            ingredients: [...newList],
-            edit: {
-                isTrue: !this.state.edit.isTrue
-            }
-        })
+        let changes = {
+            id: key,
+            ingredient: this.state.ingredient
+        }
+        this.props.dispatch({type: "EDIT_ITEM", payload: changes})
     }
 
     removeIngredientListItem = (key) => {
@@ -105,7 +107,7 @@ class UserRecipeDetails extends Component{
     }
         this.props.dispatch({ type: "ADD_ITEM", payload: item});
         this.setState({
-            ingredients: [...this.state.ingredients, this.state.ingredient],
+            ingredients: this.props.data.setOneRecipe.ingredients,
         })
     }
 
@@ -113,7 +115,7 @@ class UserRecipeDetails extends Component{
         let item = {
             item: 'direction',
             direction: this.state.direction,
-            step: this.state.directions.length,
+            step: (this.state.directions.length + 1),
             recipe: this.props.match.params.id
         }
         this.props.dispatch({ type: "ADD_ITEM", payload: item });
@@ -137,6 +139,7 @@ class UserRecipeDetails extends Component{
     }
 
     removeDirectionListItem = (key) => {
+        this.props.dispatch({ type: "DELETE_ITEM", payload: { item: 'direction', key: key } });
         let newList = this.state.directions;
         newList.splice(key, 1);
         this.setState({
@@ -144,25 +147,25 @@ class UserRecipeDetails extends Component{
         })
     }
 
-    editUserRecipe = () => {
-        let recipe = {
-            id: this.props.data.setOneRecipe.id,
-            title: this.props.data.setOneRecipe.title,
-            image: this.props.data.setOneRecipe.image,
-            ingredients: this.state.ingredients,
-            directions: this.state.directions,
-            notes: this.state.notes
-        }
-        // this.props.dispatch({type: 'EDIT_USER_RECIPE', payload: recipe});
-        this.setState({
-            editIngredients: false,
-            editDirections: false,
-            editNotes: false
-        });
-    }
+    // editUserRecipe = () => {
+    //     let recipe = {
+    //         id: this.props.data.setOneRecipe.id,
+    //         title: this.props.data.setOneRecipe.title,
+    //         image: this.props.data.setOneRecipe.image,
+    //         ingredients: this.state.ingredients,
+    //         directions: this.state.directions,
+    //         notes: this.state.notes
+    //     }
+    //     // this.props.dispatch({type: 'EDIT_USER_RECIPE', payload: recipe});
+    //     this.setState({
+    //         editIngredients: false,
+    //         editDirections: false,
+    //         editNotes: false
+    //     });
+    // }
 // ==================== RENDER ==========================
     render(){
-        console.log(`state:`, this.state);
+        // console.log(`state:`, this.state);
         let ingredients;
 
         if(this.state.editIngredients){
@@ -200,9 +203,10 @@ class UserRecipeDetails extends Component{
             ingredients = (
                 <Box>
                     <Typography>Ingredients:</Typography>
-                    {this.props.data.setOneRecipe.ingredients}
+                    {/* {JSON.stringify(this.props.data.setOneRecipe.ingredients)} */}
+                    {/* {this.props.data.setOneRecipe.ingredients} */}
                     <ul>
-                      {this.props.data.setOneRecipe.ingredients.map(item => {
+                      {this.state.ingredients.map(item => {
                           return(<li>{item.ingredient}</li>)
                       })}
                       
@@ -210,12 +214,6 @@ class UserRecipeDetails extends Component{
                     <Button onClick={this.editIngredients}>edit</Button>
                 </Box>)
         }
-
-        // {
-        //     this.state.directions.map(step => (
-        //         <li>{step.direction}</li>
-        //     ))
-        // }
 
         let directions;
 
@@ -227,7 +225,7 @@ class UserRecipeDetails extends Component{
                         {this.state.directions.map(item => {
                             if (this.state.edit.isTrue && this.state.edit.key === item.id) {
                                 return (
-                                    <Box>
+                                    <Box key={item.id}>
                                         <TextField onChange={event => this.handleChange(event, "direction")}
                                             defaultValue={item.direction} />
                                         <Button onClick={() => this.editOneDirection(item.id)}>Save Changes</Button>
@@ -242,6 +240,7 @@ class UserRecipeDetails extends Component{
                         })}
                     </ul>
                     <Box>
+
                         <TextField onChange={event => this.handleChange(event, 'direction')}
                             ref="direction"
                             variant="standard"
@@ -253,9 +252,10 @@ class UserRecipeDetails extends Component{
         }else{
             directions =(
             <Box>
+                    <Typography>Directions:</Typography>
                 <ol>
                     {this.state.directions.map(step => (
-                        <li>{step.direction}</li>
+                        <li key={step.id}>{step.direction}</li>
                     ))}
                 </ol>
                     <Button onClick={this.editDirections}>edit</Button>
@@ -284,7 +284,9 @@ class UserRecipeDetails extends Component{
                 </Box>
                 )
         }
+        console.log(this.props.data.setOneRecipe);
 // ==================== RETURN ==========================
+        console.log(this.props.data.setOneRecipe.ingredients);
         return(
             <Box>
                 <Button variant="outlined" onClick={this.goToUserPage}>Back to User Recipes</Button>
@@ -296,7 +298,6 @@ class UserRecipeDetails extends Component{
                     <Typography>NOTES:</Typography>
                    {notes}
                 </Box>
-            <Button onClick={this.editUserRecipe}>Submit Changes</Button>
             </Box>
         ) //return
     } // render
