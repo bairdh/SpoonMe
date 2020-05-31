@@ -213,4 +213,18 @@ router.put('/edit', (req, res) =>{
     })
 })
 
+router.delete(`/deleteRecipe/:id`, (req,res) => {
+    let id = req.params.id;
+    let query = `
+    DELETE FROM recipe
+    WHERE id = $1;`
+
+    pool.query(query, [id]).then(result => {
+        res.sendStatus(200);
+    }).catch(err => {
+        console.log(err);
+        res.sendStatus(500);
+    })
+})
+
 module.exports = router;

@@ -3,6 +3,7 @@ import { Box, Typography, Button, TextField } from "@material-ui/core";
 import RemoveCircleOutlineIcon from '@material-ui/icons/RemoveCircleOutline';
 import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
 import { connect } from "react-redux";
+import swal from "sweetalert";
 
 class UserRecipeDetails extends Component{
 
@@ -143,7 +144,24 @@ class UserRecipeDetails extends Component{
         })
     }
 
-    
+    deleteRecipe = () =>{
+        swal({
+            title: "Are you sure you want to delete this recipe?",
+            text: "Once deleted you will not be able to recover this recipe or any changes you may have made to it",
+            icon: "warning",
+            buttons: true,
+            dangerMode: true
+        }).then((willDelete) => {
+            if(willDelete){
+                this.props.dispatch({type: "DELETE_RECIPE", payload: this.props.data.setOneRecipe.id});
+                swal("This recipe has been deleted!", {icon: "success"});
+                this.props.history.push(`/login`)
+
+            }else{
+                swal("Recipe not deleted!");
+            }
+        })
+    }
 
 // ==================== RENDER ==========================
     render(){

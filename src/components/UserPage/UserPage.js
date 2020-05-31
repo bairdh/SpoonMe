@@ -16,8 +16,6 @@ class UserPage extends Component {
 
   sendToUserRecipeDetails = (recipe) => {
     this.props.history.push(`/userRecipeDetails/${recipe.id}`)
-    // this.props.dispatch({ type: 'FETCH_ONE_RECIPE', payload: recipe.id});
-
   }
 
   sendToCreateRecipe = () =>{
