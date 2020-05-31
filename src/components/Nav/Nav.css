@@ -14,7 +14,7 @@
 .nav-link {
   float: left;
   color: grey;
-  background-color: white;
+  background-color: transparent;
   text-align: center;
   padding: 24px 10px;
   text-decoration: none;

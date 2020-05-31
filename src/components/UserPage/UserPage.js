@@ -1,7 +1,7 @@
 import React, { Component, useEffect } from 'react';
 import { connect } from 'react-redux';
 import LogOutButton from '../LogOutButton/LogOutButton';
-import { Typography, Card, CardMedia, CardContent, Button, Box } from '@material-ui/core';
+import { Typography, Card, CardMedia, CardContent, Button, Box, TextField } from '@material-ui/core';
 
 // this could also be written with destructuring parameters as:
 // const UserPage = ({ user }) => (
@@ -9,6 +9,10 @@ import { Typography, Card, CardMedia, CardContent, Button, Box } from '@material
 
 
 class UserPage extends Component {
+
+  state = {
+    search: ''
+  }
 
   componentDidMount(){
     this.props.dispatch({type: 'FETCH_USER_RECIPES'});
@@ -22,22 +26,39 @@ class UserPage extends Component {
     this.props.history.push({pathname:'/createRecipe'});
   }
 
-    render(){      
+  handleSearch = (event) => {
+    this.setState({
+      search: event.target.value
+    })
+  }
+
+  sendSearch = () =>{
+    this.props.dispatch({type: 'GET_SEARCH', payload: this.state.search});
+  }
+
+    render(){  
+      console.log(`state:`, this.state);
+          
       return(   
       <Box>
         <Box>
           <Typography variant="h3">User recipes</Typography>
           <Button variant="outlined" color="secondary" onClick={(event)=>this.sendToCreateRecipe()}>Create New Recipe</Button>
         </Box>
-         {this.props.data.setUserRecipes.map(recipe => (
-           <Card key={recipe.id} className="card" onClick={(event) => this.sendToUserRecipeDetails(recipe)}>
-             <CardMedia className="cardImage" component="img" src={recipe.image}></CardMedia>
-             <CardContent>
-               <Typography>{recipe.name}</Typography>
-             </CardContent>
-           </Card>
- 
-         ))}
+        <Box>
+          <TextField onChange={event => this.handleSearch(event)}/>
+          <Button onClick={this.sendSearch}>Search</Button>
+        </Box>
+        <Box>
+          {this.props.data.setUserRecipes.map(recipe => (
+            <Card key={recipe.id} className="card" onClick={(event) => this.sendToUserRecipeDetails(recipe)}>
+              <CardMedia className="cardImage" component="img" src={recipe.image}></CardMedia>
+              <CardContent>
+                <Typography>{recipe.name}</Typography>
+              </CardContent>
+            </Card>
+          ))}
+        </Box>
        </Box>
    )
     }};

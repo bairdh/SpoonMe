@@ -58,6 +58,29 @@ router.get('/', (req,res) => {
     })
 });
 
+router.get(`/search/:search`, (req,res) =>{
+    console.log(`In GET search`);
+    let userId = req.user.id;
+    let search = req.params.search;
+    let query = `
+    SELECT r.id, r.name, r.image, r.notes, array_agg(DISTINCT(i.ingredient)) AS ingredients, array_agg(DISTINCT(d.direction)) AS directions
+    FROM direction AS d
+    JOIN recipe AS r
+    ON d.recipe_id = r.id
+    JOIN ingredient AS i
+    ON r.id = i.recipe_id
+    WHERE r.user_id = $1
+    AND r.name ILIKE $2
+    GROUP BY r.id;`;
+    
+    pool.query(query, [userId, `%${search}%`]).then(result => {
+        res.send(result.rows);
+    }).catch(err => {
+        console.log(err);
+        res.sendStatus(500);
+    });
+})
+
 router.get('/:id', (req, res) =>{
     console.log('In get One Recipe!')
 

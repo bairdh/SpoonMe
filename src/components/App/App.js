@@ -14,6 +14,14 @@ import './App.css';
 import RecipeDetails from '../RecipeDetails.js/RecipeDetails';
 import UserRecipeDetails from '../UserRecipeDetails/UserRecipeDetails';
 import CreateRecipe from '../CreateRecipe/CreateRecipe';
+import { withStyles } from '@material-ui/core';
+
+
+  const styles = theme => ({
+    root: {
+      background: 'blue'
+    }
+  })
 
 class App extends Component {
   componentDidMount () {
@@ -21,6 +29,7 @@ class App extends Component {
   }
 
   render() {
+    const {classes} = this.props;
     return (
       <Router>
         <div>
@@ -72,4 +81,4 @@ class App extends Component {
   )}
 }
 
-export default connect()(App);
+export default connect() (withStyles(styles)(App));

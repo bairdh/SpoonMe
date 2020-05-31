@@ -41,6 +41,12 @@ function* deleteRecipe(action){
     yield axios.delete(`/api/userRecipe/deleteRecipe/${action.payload}`);
 }
 
+function* getSearch(action){
+    let search = action.payload;
+    let res = yield axios.get(`api/userRecipe/search/${search}`);
+    yield put({ type: "SET_USER_RECIPES", payload: res.data});
+}
+
 function* userRecipeSaga() {
     yield takeLatest('SAVE_USER_RECIPE', saveUserRecipe);
     yield takeLatest('FETCH_USER_RECIPES', fetchUserRecipes);
@@ -50,6 +56,7 @@ function* userRecipeSaga() {
     yield takeLatest('DELETE_ITEM', deleteItem);
     yield takeLatest('ADD_ITEM', addItem);
     yield takeLatest('DELETE_RECIPE', deleteRecipe);
+    yield takeLatest('GET_SEARCH', getSearch);
 }
 
 export default userRecipeSaga;
