@@ -21,7 +21,9 @@ function* createRecipe(action){
 }
 
 function* editUserRecipe(action){
-    yield axios.put('/api/userRecipe/edit', action.payload);
+    let res = yield axios.put('/api/userRecipe/edit', action.payload);
+    yield put({ type: "FETCH_ONE_RECIPE", payload: res.data.recipe_id })
+
 }
 
 function* deleteItem(action){

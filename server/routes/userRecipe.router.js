@@ -177,5 +177,40 @@ router.post('/addItem', (req, res) =>{
     })
 })
 
+router.put('/edit', (req, res) =>{
+    console.log(`In Edit`);
+    let id = req.body.id
+    let type = req.body.type;
+    let change = req.body.change
+    let query;
+    let values = [change, id];
+
+    if(type === "ingredient"){
+        query = `
+        UPDATE "ingredient"
+        SET ingredient = $1
+        WHERE "id" = $2
+        RETURNING recipe_id;`;
+    }else if(type === "direction"){
+        query = `
+        UPDATE "direction"
+        SET direction = $1
+        WHERE "id" = $2
+        RETURNING recipe_id;`;
+    }else if(type === "notes"){
+        query = `
+        UPDATE "recipe"
+        SET notes = $1
+        WHERE "id" = $2
+        RETURNING id AS recipe_id;`;
+    }
+
+    pool.query(query, values).then(result =>{        
+        res.send(result.rows[0]);
+    }).catch(err => {
+        console.log(err);
+        res.sendStatus(500);
+    })
+})
 
 module.exports = router;

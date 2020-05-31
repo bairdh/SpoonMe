@@ -27,14 +27,6 @@ class UserRecipeDetails extends Component{
     }
 
     componentDidUpdate(oldProps){       
-        if(oldProps.data.setOneRecipe.ingredients === undefined && this.props.data.setOneRecipe.ingredients){
-            this.setState({
-                ingredients: this.props.data.setOneRecipe.ingredients,
-                directions: this.props.data.setOneRecipe.directions,
-                notes: this.props.data.setOneRecipe.notes
-            })
-        }
-
         if(oldProps.data.setOneRecipe !== this.props.data.setOneRecipe){
             this.setState({
                 ingredients: this.props.data.setOneRecipe.ingredients,
@@ -73,21 +65,39 @@ class UserRecipeDetails extends Component{
         })
     }
 
-    edit = (index) => {
+    editIsTrue = (id) => {
         this.setState({
             edit: {
                 isTrue: !this.state.edit.isTrue,
-                key: index
+                key: id
             }
         })
     }
 
-    editOneIngredient = (key) => {
+    editOne = (id, type) => {
         let changes = {
-            id: key,
-            ingredient: this.state.ingredient
+            type: type,
+            id: id,
+            change: ''
         }
-        this.props.dispatch({type: "EDIT_ITEM", payload: changes})
+
+        if(type === "ingredient"){
+            changes.change = this.state.ingredient;
+        }else if(type === "direction"){
+            changes.change = this.state.direction;
+        } else if (type === "notes") {
+            changes.change = this.state.notes;
+            this.setState({
+                editNotes: !this.state.editNotes
+            })
+        }
+        this.props.dispatch({ type: "EDIT_USER_RECIPE", payload: changes});
+
+        this.setState({
+            edit: {
+                isTrue: false
+            }
+        })
     }
 
     removeIngredientListItem = (key) => {
@@ -124,20 +134,6 @@ class UserRecipeDetails extends Component{
         })
     }
 
-    editOneDirection = (key) => {
-        // create new copy of direction list 
-        // but cut out the old step and replace it with the new one
-        const newList = this.state.directions
-        newList.splice(key, 1, this.state.direction);
-        // replace the old direction list with the new one in state
-        this.setState({
-            directions: [...newList],
-            edit: {
-                isTrue: !this.state.edit.isTrue
-            }
-        })
-    }
-
     removeDirectionListItem = (key) => {
         this.props.dispatch({ type: "DELETE_ITEM", payload: { item: 'direction', key: key } });
         let newList = this.state.directions;
@@ -147,22 +143,8 @@ class UserRecipeDetails extends Component{
         })
     }
 
-    // editUserRecipe = () => {
-    //     let recipe = {
-    //         id: this.props.data.setOneRecipe.id,
-    //         title: this.props.data.setOneRecipe.title,
-    //         image: this.props.data.setOneRecipe.image,
-    //         ingredients: this.state.ingredients,
-    //         directions: this.state.directions,
-    //         notes: this.state.notes
-    //     }
-    //     // this.props.dispatch({type: 'EDIT_USER_RECIPE', payload: recipe});
-    //     this.setState({
-    //         editIngredients: false,
-    //         editDirections: false,
-    //         editNotes: false
-    //     });
-    // }
+    
+
 // ==================== RENDER ==========================
     render(){
         // console.log(`state:`, this.state);
@@ -179,12 +161,12 @@ class UserRecipeDetails extends Component{
                             <Box key={item.id}>
                                 <TextField onChange={event => this.handleChange(event, "ingredient")}
                                         defaultValue={item.ingredient} />
-                                <Button onClick={() => this.editOneIngredient(item.id)}>Save Changes</Button>
+                                <Button onClick={() => this.editOne(item.id, "ingredient")}>Save Changes</Button>
                             </Box>
                             )
                         }else{
                             return ( <li key={item.id}>{item.ingredient}  
-                                 <EditOutlinedIcon fontSize="small" onClick={() => this.edit(item.id)} />
+                                 <EditOutlinedIcon fontSize="small" onClick={() => this.editIsTrue(item.id)} />
                                  <RemoveCircleOutlineIcon fontSize="small" onClick={() => this.removeIngredientListItem(item.id)} />
                              </li>)
                         }
@@ -207,7 +189,7 @@ class UserRecipeDetails extends Component{
                     {/* {this.props.data.setOneRecipe.ingredients} */}
                     <ul>
                       {this.state.ingredients.map(item => {
-                          return(<li>{item.ingredient}</li>)
+                          return(<li key={item.id}>{item.ingredient}</li>)
                       })}
                       
                     </ul>
@@ -228,12 +210,12 @@ class UserRecipeDetails extends Component{
                                     <Box key={item.id}>
                                         <TextField onChange={event => this.handleChange(event, "direction")}
                                             defaultValue={item.direction} />
-                                        <Button onClick={() => this.editOneDirection(item.id)}>Save Changes</Button>
+                                        <Button onClick={() => this.editOne(item.id, "direction")}>Save Changes</Button>
                                     </Box>
                                 )
                             } else {
                                 return (<li key={item.id}>{item.direction}
-                                    <EditOutlinedIcon fontSize="small" onClick={() => this.edit(item.id)} />
+                                    <EditOutlinedIcon fontSize="small" onClick={() => this.editIsTrue(item.id)} />
                                     <RemoveCircleOutlineIcon fontSize="small" onClick={() => this.removeDirectionListItem(item.id)} />
                                 </li>)
                             }
@@ -273,7 +255,7 @@ class UserRecipeDetails extends Component{
                     label="Notes"
                     multiline={true}
                     defaultValue={this.state.notes} />
-                <Button onClick={this.editNotes}>SAVE</Button>
+                <Button onClick={() => this.editOne(this.props.data.setOneRecipe.id, "notes")}>SAVE</Button>
             </Box>
                 )
         }else{
@@ -298,6 +280,7 @@ class UserRecipeDetails extends Component{
                     <Typography>NOTES:</Typography>
                    {notes}
                 </Box>
+                <Button onClick={this.deleteRecipe} variant="contained" color="secondary">DELETE RECIPE</Button>
             </Box>
         ) //return
     } // render
