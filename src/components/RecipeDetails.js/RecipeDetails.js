@@ -1,6 +1,20 @@
 import React, { Component } from "react";
-import { Button, Box } from "@material-ui/core";
+import { Button, Box, Typography, withStyles } from "@material-ui/core";
 import { connect } from "react-redux";
+
+const styles =  theme =>({
+    mainContainer:{
+        textAlign: 'center',
+        maxWidth: '90vw'
+    },
+    saveBtn:{
+        textAlign: 'right'
+    },
+    item:{
+        textAlign: 'left'
+    }
+})
+
 
 class RecipeDetails extends Component{
 
@@ -13,9 +27,8 @@ class RecipeDetails extends Component{
     }
 
     render(){
-        console.log(this.props.data.user);
-
-       let saveButton;
+        const {classes} = this.props;
+        let saveButton;
 
         if (this.props.data.user.id) {
              saveButton = (<Box>
@@ -24,34 +37,37 @@ class RecipeDetails extends Component{
         }else{
             saveButton = (<Box></Box>)
         }
-
         
         return(
-            <div>
-                <h2>{this.state.recipe.title}</h2>
-                {saveButton}
+            <Box mx="auto" className={classes.mainContainer}>
+                <Typography variant="h3">{this.state.recipe.title}</Typography>
+                <Box className={classes.saveBtn}>
+                    {saveButton}
+                </Box>
                 <br/>
                 <img src={this.state.recipe.image} />
-                <ol>
-                    {this.state.recipe.analyzedInstructions[0].steps.map( step => (
-                        <li>{step.step}</li>
-                    ))}
-
-                </ol>
-                <div>
-                    <p>extendedIngredients:</p>
+                <Box className={classes.item}>
+                    <Typography variant="h5">Ingredients:</Typography>
                     <ul>
                         {this.state.recipe.extendedIngredients.map(steps => (
-                            // steps.original = amount, unit, name
                             <li>{steps.original}</li>
                         ))}
                     </ul>
-                </div>
-            </div>
+                </Box>
+                <Box className={classes.item}>
+                    <Typography variant="h5">Directions:</Typography>
+                    <ol>
+                        {this.state.recipe.analyzedInstructions[0].steps.map( step => (
+                            <li>{step.step}</li>
+                        ))}
+
+                    </ol>
+                </Box>
+            </Box>
         ) // return
     } // render
 } // class
 
 const ReduxToProps = data => ({data});
 
-export default connect(ReduxToProps)(RecipeDetails);
+export default connect(ReduxToProps)(withStyles(styles)(RecipeDetails));

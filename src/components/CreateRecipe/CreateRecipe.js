@@ -1,8 +1,24 @@
 import React, { Component } from "react";
-import { Box, Typography, TextField, Button } from "@material-ui/core";
+import { Box, Typography, TextField, Button, withStyles } from "@material-ui/core";
 import RemoveCircleOutlineIcon from '@material-ui/icons/RemoveCircleOutline';
 import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
 import { connect } from "react-redux";
+
+const styles = theme =>({
+    mainContainer:{
+        textAlign: 'center',
+        maxWidth: '60vw'
+    },
+    image:{
+        maxWidth: '50vw'
+    },
+     items:{
+        textAlign: 'left',
+    },
+    btn:{
+        textAlign: 'right'
+    }
+});
 
 class CreateRecipe extends Component{
 
@@ -102,88 +118,105 @@ class CreateRecipe extends Component{
         this.props.history.push({pathname:'/login'});
     }
     render(){
-        let image;
+        const {classes} = this.props;
 
+        let image;
         // toggles input for ingredients/directions List
         if(this.state.image !== ''){
-            image =(<img src={this.state.image}/>)
+            image =(<img src={this.state.image} className={classes.image}/>)
         }else{
             image= <Box></Box>
         }
 
         return(
-            <Box >
+            <Box>
                 <Button variant="outlined" onClick={this.goToUserPage}>Back to User Recipes</Button>
-                <Typography variant="h3">Create Recipe</Typography>
-                <TextField onChange={event => this.handleChange(event, "name")} variant="standard"
-                    label="Name"/>
-                    {image}
-                <TextField onChange={event => this.handleChange(event, "image")}variant="standard"
-                    label="Image"/>
-                <Box>
+                <Box className={classes.mainContainer} mx="auto">
+                    <Typography variant="h3">Create Recipe</Typography>
+                    <TextField onChange={event => this.handleChange(event, "name")} variant="standard"
+                       
+                        fullWidth={true}
+                        label="Name"/>
+                        <Box mt={3}>
+                            {image}
+                        </Box>
+                    <TextField onChange={event => this.handleChange(event, "image")}variant="standard"
+                        mt={2}
+                        fullWidth={true}
+                        label="Image"/>
+                    <Box py={4}>
+                        <Box className={classes.items}>
+                            <Typography>Ingredients:</Typography>
+                            <ul>
+                                {this.state.ingredients.map((item, i) => {
+                                    if (this.state.edit.isTrue && this.state.edit.key === i) {
+                                        return (<Box key={i}>
+                                            <TextField onChange={event => this.handleChange(event, "ingredient")}
+                                                defaultValue={item} />
+                                            <Button onClick={() => this.editOneIngredient(i)}>Save Changes</Button>
+                                        </Box>)
+                                    }
+                                    else {
+                                        return (<li key={i}>{item}
+                                            <EditOutlinedIcon fontSize="small" onClick={() => this.edit(i)} />
+                                            <RemoveCircleOutlineIcon fontSize="small" onClick={() => this.removeIngredientListItem(i)} /> </li>)
+                                    }
+                                })}
+                            </ul>
+                        </Box> {/* End Ingredient List */}
+                        <TextField onChange={event => this.handleChange(event, "ingredient")}
+                            fullWidth={true}
+                            variant="standard"
+                            label="Ingredient"/>
+                        <Box mt={1} className={classes.btn}>
+                            <Button onClick={this.ingredientList} 
+                                variant="outlined" 
+                                color="secondary">Add Ingredient</Button>
+                        </Box>
+                    </Box> {/* End Ingredient Box */} 
                     <Box>
-                        <Typography>Ingredients:</Typography>
-                        <ul>
-                            {this.state.ingredients.map((item, i) => {
-                                if (this.state.edit.isTrue && this.state.edit.key === i) {
-                                    return (<Box key={i}>
-                                        <TextField onChange={event => this.handleChange(event, "ingredient")}
-                                            defaultValue={item} />
-                                        <Button onClick={() => this.editOneIngredient(i)}>Save Changes</Button>
-                                    </Box>)
-                                }
-                                else {
-                                    return (<li key={i}>{item}
-                                        <EditOutlinedIcon fontSize="small" onClick={() => this.edit(i)} />
-                                        <RemoveCircleOutlineIcon fontSize="small" onClick={() => this.removeIngredientListItem(i)} /> </li>)
-                                }
-                            })}
-                        </ul>
-                    </Box> {/* End Ingredient List */}
-                    <TextField onChange={event => this.handleChange(event, "ingredient")}
-                        ref="ingredient" 
-                        variant="standard"
-                        label="Ingredient"/>
-                    <Button onClick={this.ingredientList} 
-                        variant="outlined" 
-                        color="secondary">Add Ingredient</Button>
-                </Box> {/* End Ingredient Box */} 
-                <Box>
-                    <Box>
-                        <Typography>Directions:</Typography>
-                        <ol>
-                            {this.state.directions.map((step, i) => {
-                                if(this.state.edit.isTrue && this.state.edit.key === i){
-                                    return( <Box key={i}>
-                                        <TextField onChange={event => this.handleChange(event, "direction")}
-                                            label='Step'
-                                            defaultValue={step}/>
-                                        <Button onClick={()=>this.editOneDirection(i)}>Save Changes</Button>
-                                    </Box>)
-                                }
-                                else{
-                                    return( <li key={i}>{step} 
-                                    <EditOutlinedIcon fontSize="small" onClick={() => this.edit(i)}/>
-                                        <RemoveCircleOutlineIcon fontSize="small" onClick={() => this.removeDirectionListItem(i)}/> </li>)
-                                }
+                        <Box className={classes.items}>
+                            <Typography>Directions:</Typography>
+                            <ol>
+                                {this.state.directions.map((step, i) => {
+                                    if(this.state.edit.isTrue && this.state.edit.key === i){
+                                        return( <Box key={i}>
+                                            <TextField onChange={event => this.handleChange(event, "direction")}
+                                                label='Step'
+                                                defaultValue={step}/>
+                                            <Button onClick={()=>this.editOneDirection(i)}>Save Changes</Button>
+                                        </Box>)
+                                    }
+                                    else{
+                                        return( <li key={i}>{step} 
+                                        <EditOutlinedIcon fontSize="small" onClick={() => this.edit(i)}/>
+                                            <RemoveCircleOutlineIcon fontSize="small" onClick={() => this.removeDirectionListItem(i)}/> </li>)
+                                    }
 
-                            })}
-                        </ol>
-                    </Box> {/* End Direction List */}
-                    <TextField onChange={event => this.handleChange(event, "direction")} 
-                        variant="outlined"
-                        multiline={true}
-                        label="Directions"/>
-                    <Button onClick={this.directionList}
-                        variant="outlined" 
-                        color="secondary">Add Direction</Button>
-                        <br/>
-                </Box>  {/* End Direction Box */}
+                                })}
+                            </ol>
+                        </Box> {/* End Direction List */}
+                        <TextField onChange={event => this.handleChange(event, "direction")} 
+                            variant="outlined"
+                            fullWidth={true}
+                            multiline={true}
+                            label="Directions"/>
+                            <Box className={classes.btn} mt={1}>
+                                <Button onClick={this.directionList}
+                                    variant="outlined" 
+                                    color="secondary">Add Direction</Button>
+                            </Box>
+                            <br/>
+                    </Box>  {/* End Direction Box */}
 
-                <TextField  variant="outlined"
-                        multiline={true}
-                        label="Notes"/>
-                <Button onClick={this.sendRecipe} variant="outlined">Submit all</Button>
+                    <TextField  variant="outlined"
+                            multiline={true}
+                            fullWidth={true}
+                            label="Notes"/>
+                </Box>
+                <Box className={classes.btn} mt={3} mr={4}>
+                    <Button onClick={this.sendRecipe} variant="outlined">Submit all</Button>
+                </Box>
             </Box>
         ) // return
     } // render
@@ -191,4 +224,4 @@ class CreateRecipe extends Component{
 
 const reduxToProps = data => ({data});
 
-export default connect(reduxToProps)(CreateRecipe);
+export default connect(reduxToProps)(withStyles(styles)(CreateRecipe));

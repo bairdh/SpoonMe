@@ -1,9 +1,25 @@
 import React, { Component } from "react";
-import { Box, Typography, Button, TextField } from "@material-ui/core";
+import { Box, Typography, Button, TextField, withStyles } from "@material-ui/core";
 import RemoveCircleOutlineIcon from '@material-ui/icons/RemoveCircleOutline';
 import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
 import { connect } from "react-redux";
 import swal from "sweetalert";
+
+
+const styles = theme => ({
+    mainContainer:{
+        width: '80vw',
+        margin: 'auto',
+        textAlign: 'center'
+    },
+    items:{
+        textAlign: 'left',
+        border: 1
+    },
+    editBtn:{
+        textAlign: 'right'
+    }
+})
 
 class UserRecipeDetails extends Component{
 
@@ -165,14 +181,14 @@ class UserRecipeDetails extends Component{
 
 // ==================== RENDER ==========================
     render(){
-        // console.log(`state:`, this.state);
+        const {classes} = this.props;
         let ingredients;
 
         if(this.state.editIngredients){
             ingredients = (
-            <Box>
-                <Typography>Ingredients:</Typography>
-                <ul>
+            <Box className={classes.items} border={1}>
+                    <Typography variant="h5">Ingredients:</Typography>
+                <ol>
                         {this.props.data.setOneRecipe.ingredients.map(item => {
                         if(this.state.edit.isTrue && this.state.edit.key === item.id){
                             return (
@@ -189,7 +205,7 @@ class UserRecipeDetails extends Component{
                              </li>)
                         }
                     })}
-                </ul>
+                </ol>
                 <Box>
                     <TextField onChange={event => this.handleChange(event, 'ingredient')}
                         ref="ingredient"
@@ -197,21 +213,23 @@ class UserRecipeDetails extends Component{
                         label="Ingredient" />
                     <Button onClick={this.ingredientList}>Add</Button>
                 </Box>
-                <Button onClick={this.editIngredients}>Save</Button>
+                    <Box className={classes.editBtn}>
+                    <Button onClick={this.editIngredients}>Save</Button>
+                </Box>
             </Box>)
         }else{
             ingredients = (
-                <Box>
-                    <Typography>Ingredients:</Typography>
-                    {/* {JSON.stringify(this.props.data.setOneRecipe.ingredients)} */}
-                    {/* {this.props.data.setOneRecipe.ingredients} */}
+                <Box className={classes.items} border={1} borderColor="grey">
+                    <Typography variant="h5">Ingredients:</Typography>
                     <ul>
                       {this.state.ingredients.map(item => {
                           return(<li key={item.id}>{item.ingredient}</li>)
                       })}
                       
                     </ul>
-                    <Button onClick={this.editIngredients}>edit</Button>
+                    <Box className={classes.editBtn}>
+                        <Button onClick={this.editIngredients}>edit</Button>
+                    </Box>
                 </Box>)
         }
 
@@ -219,8 +237,8 @@ class UserRecipeDetails extends Component{
 
         if(this.state.editDirections){
             directions = (
-                <Box>
-                    <Typography>Directions:</Typography>
+                <Box className={classes.items}>
+                    <Typography variant="h5">Directions:</Typography>
                     <ul>
                         {this.state.directions.map(item => {
                             if (this.state.edit.isTrue && this.state.edit.key === item.id) {
@@ -247,18 +265,22 @@ class UserRecipeDetails extends Component{
                             label="Direction" />
                         <Button onClick={this.directionList}>Add</Button>
                     </Box>
-                    <Button onClick={this.editDirections}>Save</Button>
+                    <Box className={classes.editBtn}>
+                        <Button onClick={this.editDirections}>Save</Button>
+                    </Box>
                 </Box>)
         }else{
             directions =(
-            <Box>
-                    <Typography>Directions:</Typography>
+                <Box className={classes.items}>
+                    <Typography variant="h5">Directions:</Typography>
                 <ol>
                     {this.state.directions.map(step => (
                         <li key={step.id}>{step.direction}</li>
                     ))}
                 </ol>
+                    <Box className={classes.editBtn}>
                     <Button onClick={this.editDirections}>edit</Button>
+                </Box>
             </Box>)
         }
 
@@ -266,21 +288,27 @@ class UserRecipeDetails extends Component{
 
         if (this.state.editNotes){
             notes = ( 
-            <Box>
+                <Box className={classes.items}>
+                <Typography variant="h5">NOTES:</Typography>
                 <TextField onChange={event => this.handleChange(event, 'notes')}
                     ref="Notes"
-                    variant="standard"
-                    label="Notes"
+                    fullWidth={true}
+                    variant="outlined"
                     multiline={true}
                     defaultValue={this.state.notes} />
-                <Button onClick={() => this.editOne(this.props.data.setOneRecipe.id, "notes")}>SAVE</Button>
+                    <Box className={classes.editBtn}>
+                        <Button onClick={() => this.editOne(this.props.data.setOneRecipe.id, "notes")}>SAVE</Button>
+                    </Box>
             </Box>
                 )
         }else{
             notes = (
-                <Box>
-                    <Typography>{this.state.notes}</Typography>
-                    <Button onClick={this.editNotes}>edit</Button>
+                <Box className={classes.items}>
+                    <Typography variant="h5">NOTES:</Typography>
+                    <Typography ml={2}>{this.state.notes}</Typography>
+                    <Box className={classes.editBtn}>
+                        <Button onClick={this.editNotes}>edit</Button>
+                    </Box>
                 </Box>
                 )
         }
@@ -288,17 +316,18 @@ class UserRecipeDetails extends Component{
 // ==================== RETURN ==========================
         console.log(this.props.data.setOneRecipe.ingredients);
         return(
-            <Box>
-                <Button variant="outlined" onClick={this.goToUserPage}>Back to User Recipes</Button>
-                <Typography>{this.props.data.setOneRecipe.name}</Typography>
-                <img src={this.props.data.setOneRecipe.image} />
-                {ingredients}
-                {directions}
-                <Box>
-                    <Typography>NOTES:</Typography>
-                   {notes}
+            <Box >
+            <Button variant="outlined" onClick={this.goToUserPage}>Back to User Recipes</Button>
+                <Box className={classes.mainContainer}>
+                    <Typography variant="h3">{this.props.data.setOneRecipe.name}</Typography>
+                    <img src={this.props.data.setOneRecipe.image} />
+                    {ingredients}
+                    {directions}
+                    {notes}
+                    <Box className={classes.editBtn} mt={4}>
+                        <Button onClick={this.deleteRecipe} variant="contained" color="secondary">DELETE RECIPE</Button>
+                    </Box>
                 </Box>
-                <Button onClick={this.deleteRecipe} variant="contained" color="secondary">DELETE RECIPE</Button>
             </Box>
         ) //return
     } // render
@@ -306,4 +335,4 @@ class UserRecipeDetails extends Component{
 
 const reduxToProps = data => ({data})
 
-export default connect(reduxToProps)(UserRecipeDetails);
+export default connect(reduxToProps)(withStyles(styles)(UserRecipeDetails));
