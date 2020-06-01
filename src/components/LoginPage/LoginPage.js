@@ -1,5 +1,27 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import {Box, withStyles, TextField, Button} from '@material-ui/core';
+
+const styles = () => ({
+  outline: {
+    width: '50vw',
+    maxWidth: '450px',
+    minWidth: '300px',
+    background: '#ECEFF1',
+    padding: 4,
+    paddingBottom: 4,
+    borderRadius: 30
+
+  },
+  form:{
+    margin: 'auto',
+    textAlign: 'center',
+   
+  },
+  loginBtn:{
+      margin: 10,
+  }
+})
 
 class LoginPage extends Component {
   state = {
@@ -30,8 +52,9 @@ class LoginPage extends Component {
   }
 
   render() {
+    const {classes} = this.props;
     return (
-      <div>
+      <Box className={classes.outline} boxShadow={3} mx="auto" my={4}>
         {this.props.errors.loginMessage && (
           <h2
             className="alert"
@@ -40,49 +63,48 @@ class LoginPage extends Component {
             {this.props.errors.loginMessage}
           </h2>
         )}
-        <form onSubmit={this.login}>
+        <form onSubmit={this.login} className={classes.form}>
           <h1>Login</h1>
-          <div>
-            <label htmlFor="username">
-              Username:
-              <input
+          <Box>
+              <TextField
                 type="text"
                 name="username"
+                label= "Username"
                 value={this.state.username}
                 onChange={this.handleInputChangeFor('username')}
               />
-            </label>
-          </div>
-          <div>
-            <label htmlFor="password">
-              Password:
-              <input
+          </Box>
+          <Box>
+              <TextField
                 type="password"
                 name="password"
+                label="Password"
                 value={this.state.password}
                 onChange={this.handleInputChangeFor('password')}
               />
-            </label>
-          </div>
-          <div>
-            <input
-              className="log-in"
-              type="submit"
-              name="submit"
-              value="Log In"
-            />
-          </div>
+          </Box>
+          <Box>
+            <Box mt={3} mb={2}>
+              <Button
+                variant="outlined"
+                color="primary"
+                type="submit"
+                name="submit"
+                value="Log In"
+              >Login</Button>
+            </Box>
+          </Box>
         </form>
         <center>
-          <button
+          <Button
             type="button"
             className="link-button"
             onClick={() => {this.props.dispatch({type: 'SET_TO_REGISTER_MODE'})}}
           >
             Register
-          </button>
+          </Button>
         </center>
-      </div>
+      </Box>
     );
   }
 }
@@ -94,4 +116,4 @@ const mapStateToProps = state => ({
   errors: state.errors,
 });
 
-export default connect(mapStateToProps)(LoginPage);
+export default connect(mapStateToProps) (withStyles(styles)(LoginPage));
