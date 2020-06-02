@@ -34,3 +34,7 @@ body {
     max-width: 80%;
     max-height: 500px;
 }
+
+.notes{
+    white-space: pre-line;
+}

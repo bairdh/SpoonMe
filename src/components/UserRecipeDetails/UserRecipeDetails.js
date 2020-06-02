@@ -307,7 +307,7 @@ class UserRecipeDetails extends Component{
             notes = (
                 <Box className={classes.items}>
                     <Typography variant="h5">NOTES:</Typography>
-                    <Typography ml={2}>{this.state.notes}</Typography>
+                    <Typography className='notes' ml={2}>{this.state.notes}</Typography>
                     <Box className={classes.editBtn}>
                         <Button onClick={this.editNotes}>edit</Button>
                     </Box>
