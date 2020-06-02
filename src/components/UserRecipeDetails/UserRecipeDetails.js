@@ -4,13 +4,15 @@ import RemoveCircleOutlineIcon from '@material-ui/icons/RemoveCircleOutline';
 import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
 import { connect } from "react-redux";
 import swal from "sweetalert";
-
+import '../App/App.css';
 
 const styles = theme => ({
     mainContainer:{
         width: '80vw',
         margin: 'auto',
-        textAlign: 'center'
+        textAlign: 'center',
+        borderRadius: 10,
+        background: 'rgba(255, 255, 255, 0.678)'
     },
     items:{
         textAlign: 'left',
@@ -239,7 +241,7 @@ class UserRecipeDetails extends Component{
             directions = (
                 <Box className={classes.items}>
                     <Typography variant="h5">Directions:</Typography>
-                    <ul>
+                    <ol>
                         {this.state.directions.map(item => {
                             if (this.state.edit.isTrue && this.state.edit.key === item.id) {
                                 return (
@@ -256,7 +258,7 @@ class UserRecipeDetails extends Component{
                                 </li>)
                             }
                         })}
-                    </ul>
+                    </ol>
                     <Box>
 
                         <TextField onChange={event => this.handleChange(event, 'direction')}
@@ -316,17 +318,19 @@ class UserRecipeDetails extends Component{
 // ==================== RETURN ==========================
         console.log(this.props.data.setOneRecipe.ingredients);
         return(
-            <Box >
-            <Button variant="outlined" onClick={this.goToUserPage}>Back to User Recipes</Button>
-                <Box className={classes.mainContainer}>
+            <Box>
+                <Box my={3} ml={2}>
+                    <Button variant="outlined" onClick={this.goToUserPage}>Back to User Recipes</Button>
+                </Box>
+                <Box className={classes.mainContainer} boxShadow={3} p={2}>
                     <Typography variant="h3">{this.props.data.setOneRecipe.name}</Typography>
-                    <img src={this.props.data.setOneRecipe.image} />
+                    <img src={this.props.data.setOneRecipe.image} className="detailImage"/>
                     {ingredients}
                     {directions}
                     {notes}
-                    <Box className={classes.editBtn} mt={4}>
-                        <Button onClick={this.deleteRecipe} variant="contained" color="secondary">DELETE RECIPE</Button>
-                    </Box>
+                </Box>
+                <Box className={classes.editBtn} my={4} mr={3}>
+                    <Button onClick={this.deleteRecipe} variant="contained" color="secondary">DELETE RECIPE</Button>
                 </Box>
             </Box>
         ) //return

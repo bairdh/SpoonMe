@@ -7,7 +7,7 @@ const styles = () => ({
     width: '50vw',
     maxWidth: '450px',
     minWidth: '300px',
-    background: '#ECEFF1',
+    background: 'rgba(255, 255, 255, 0.678)',
     padding: 4,
     paddingBottom: 4,
     borderRadius: 30

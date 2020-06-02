@@ -1,6 +1,15 @@
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     margin: 0px;
+    background-image: url('../../background.jpg');
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+}
+
+.appContainer{
+    /* padding-bottom:calc(100vh - 540px); */
 }
 
 .alert {
@@ -13,4 +22,15 @@ body {
     margin: 2%;
     display: inline-block;
     max-width: 250px;
+    min-height: 273px;
+    max-height: 273px;
+}
+
+.card > img{
+    max-height: 185px;
+}
+
+.detailImage{
+    max-width: 80%;
+    max-height: 500px;
 }

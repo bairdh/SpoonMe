@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import LogOutButton from '../LogOutButton/LogOutButton';
 import './Nav.css';
 import { Input, Button, Box } from '@material-ui/core';
-
+import logo from '../../logoSpoonMe.png';
 
 const handleClick = (search, props) => {
   console.log(search);
@@ -14,17 +14,19 @@ const handleClick = (search, props) => {
 const Nav = (props) => {
   const [search, setSearch] = useState('');
 
-  return (<div className="nav">
+  return (<Box className="nav">
     <Link to="/home">
-      <img width={80} src="https://scontent.ffcm1-1.fna.fbcdn.net/v/t1.15752-9/99350421_1890253584438394_6196566935342153728_n.png?_nc_cat=105&_nc_sid=b96e70&_nc_ohc=YX9kX5rpBc4AX_CF_po&_nc_ht=scontent.ffcm1-1.fna&oh=e1f0236828dee330107b4fbc1e5e18ca&oe=5EEEC033"/>
+      <img width={80} src={logo}/>
     </Link>
-    <div className="nav-right">
-      <div className="navSearch">
+    <Box className="nav-right">
+      <Box className="navSearch">
         <Input placeholder="Search" defaultValue="" onChange={event => setSearch(event.target.value)}/>
-        <Link to="/home">
-          <Button variant="outlined" color="primary" onClick={() => handleClick(search, props)}>Search</Button>
-        </Link>
-      </div>
+        <Box display="inline" ml={1}>
+          <Link to="/home">
+            <Button variant="outlined" color="primary" onClick={() => handleClick(search, props)}>Search</Button>
+          </Link>
+        </Box>
+      </Box>
       <Link className="nav-link" to="/login">
         {/* Show this link if they are logged in or not,
         but call this link 'Home' if they are logged in,
@@ -37,12 +39,8 @@ const Nav = (props) => {
           <LogOutButton className="nav-link"/>
         </>
       )}
-      {/* Always show this link since the about page is not protected */}
-      <Link className="nav-link" to="/about">
-        About
-      </Link>
-    </div>
-  </div>)
+    </Box>
+  </Box>)
 };
 
 // Instead of taking everything from state, we just want the user

@@ -1,11 +1,14 @@
 import React, { Component } from "react";
 import { Button, Box, Typography, withStyles } from "@material-ui/core";
 import { connect } from "react-redux";
+import swal from "sweetalert";
 
 const styles =  theme =>({
     mainContainer:{
         textAlign: 'center',
-        maxWidth: '90vw'
+        maxWidth: '80vw',
+        background: 'rgba(255, 255, 255, 0.678)',
+        borderRadius: 10
     },
     saveBtn:{
         textAlign: 'right'
@@ -23,7 +26,11 @@ class RecipeDetails extends Component{
     }
 
     handleSave = () => {
-        this.props.dispatch({type: 'SAVE_USER_RECIPE', payload: this.state})
+        this.props.dispatch({type: 'SAVE_USER_RECIPE', payload: this.state});
+        swal({
+            icon:"success",
+            title: "Recipe successfully saved to your recipes!"
+        });
     }
 
     render(){
@@ -38,14 +45,15 @@ class RecipeDetails extends Component{
             saveButton = (<Box></Box>)
         }
         
-        return(
-            <Box mx="auto" className={classes.mainContainer}>
+        return( 
+        <Box mb={4}>
+            <Box className={classes.saveBtn} m={2}>
+                {saveButton}
+            </Box>        
+                <Box mx="auto" mp={4} boxShadow={3} p={2} className={classes.mainContainer}>
                 <Typography variant="h3">{this.state.recipe.title}</Typography>
-                <Box className={classes.saveBtn}>
-                    {saveButton}
-                </Box>
                 <br/>
-                <img src={this.state.recipe.image} />
+                    <img src={this.state.recipe.image} className="detailImage"/>
                 <Box className={classes.item}>
                     <Typography variant="h5">Ingredients:</Typography>
                     <ul>
@@ -63,6 +71,7 @@ class RecipeDetails extends Component{
 
                     </ol>
                 </Box>
+            </Box>
             </Box>
         ) // return
     } // render

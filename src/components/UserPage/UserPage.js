@@ -57,8 +57,11 @@ class UserPage extends Component {
           container
           spacing={2}>
           <Grid item className={classes.search} display="inline">
-            <TextField mr={3} onChange={event => this.handleSearch(event)}/>
+          
+              <TextField label="user search" onChange={event => this.handleSearch(event)}/>
+            <Box ml={1} mt={1} display="inline">
               <Button variant="outlined" onClick={this.sendSearch}>Search</Button>
+            </Box>
           </Grid>
           <Grid item className={classes.createBtn} display="inline">
               <Button variant="outlined" color="secondary" onClick={(event)=>this.sendToCreateRecipe()}>Create New Recipe</Button>

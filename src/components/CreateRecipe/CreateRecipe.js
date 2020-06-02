@@ -7,10 +7,10 @@ import { connect } from "react-redux";
 const styles = theme =>({
     mainContainer:{
         textAlign: 'center',
-        maxWidth: '60vw'
-    },
-    image:{
-        maxWidth: '50vw'
+        maxWidth: '60vw',
+        minWidth: '445px',
+        borderRadius: 10,
+        background: 'rgba(255, 255, 255, 0.678)'
     },
      items:{
         textAlign: 'left',
@@ -123,15 +123,17 @@ class CreateRecipe extends Component{
         let image;
         // toggles input for ingredients/directions List
         if(this.state.image !== ''){
-            image =(<img src={this.state.image} className={classes.image}/>)
+            image = (<img src={this.state.image} className="detailImage"/>)
         }else{
             image= <Box></Box>
         }
 
         return(
             <Box>
-                <Button variant="outlined" onClick={this.goToUserPage}>Back to User Recipes</Button>
-                <Box className={classes.mainContainer} mx="auto">
+                <Box my={3} ml={2}>
+                    <Button variant="outlined" onClick={this.goToUserPage}>Back to User Recipes</Button>
+                </Box>
+                <Box className={classes.mainContainer} mx="auto" boxShadow={3} p={2}>
                     <Typography variant="h3">Create Recipe</Typography>
                     <TextField onChange={event => this.handleChange(event, "name")} variant="standard"
                        
@@ -214,8 +216,8 @@ class CreateRecipe extends Component{
                             fullWidth={true}
                             label="Notes"/>
                 </Box>
-                <Box className={classes.btn} mt={3} mr={4}>
-                    <Button onClick={this.sendRecipe} variant="outlined">Submit all</Button>
+                <Box className={classes.btn} my={4} mr={3}>
+                    <Button onClick={this.sendRecipe} color="primary" variant="outlined">Save Recipe</Button>
                 </Box>
             </Box>
         ) // return

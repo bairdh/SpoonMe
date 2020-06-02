@@ -14,12 +14,12 @@ import './App.css';
 import RecipeDetails from '../RecipeDetails.js/RecipeDetails';
 import UserRecipeDetails from '../UserRecipeDetails/UserRecipeDetails';
 import CreateRecipe from '../CreateRecipe/CreateRecipe';
-import { withStyles } from '@material-ui/core';
+import { withStyles, Box } from '@material-ui/core';
 
 
   const styles = theme => ({
     root: {
-      background: 'blue'
+     
     }
   })
 
@@ -32,7 +32,7 @@ class App extends Component {
     const {classes} = this.props;
     return (
       <Router>
-        <div>
+        <Box className='appContainer'>
           <Nav  dispatch={this.props.dispatch}/>
           <Switch>
             {/* Visiting localhost:3000 will redirect to localhost:3000/home */}
@@ -75,8 +75,8 @@ class App extends Component {
             {/* If none of the other routes matched, we will show a 404. */}
             <Route render={() => <h1>404</h1>} />
           </Switch>
-          <Footer />
-        </div>
+        {/* <Footer /> */}
+        </Box>
       </Router>
   )}
 }
