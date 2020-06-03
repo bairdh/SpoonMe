@@ -27,7 +27,7 @@ const Nav = (props) => {
           </Link>
         </Box>
       </Box>
-      <Link className="nav-link" to="/login">
+      <Link className="nav-link" to="/userRecipes">
         {/* Show this link if they are logged in or not,
         but call this link 'Home' if they are logged in,
         and call this link 'Login / Register' if they are not */}

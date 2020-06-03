@@ -1,8 +1,13 @@
 import React, { Component } from "react";
+import { connect } from "react-redux";
+import ReactDOM from 'react-dom';
+import { Grid, Row, Col } from 'react-flexbox-grid';
+
+// Styling
 import { Box, Typography, Button, TextField, withStyles } from "@material-ui/core";
 import RemoveCircleOutlineIcon from '@material-ui/icons/RemoveCircleOutline';
 import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
-import { connect } from "react-redux";
+import FiberManualRecordIcon from '@material-ui/icons/FiberManualRecord';
 import swal from "sweetalert";
 import '../App/App.css';
 
@@ -16,10 +21,24 @@ const styles = theme => ({
     },
     items:{
         textAlign: 'left',
-        border: 1
     },
     editBtn:{
-        textAlign: 'right'
+        textAlign: 'right',
+        verticalAlign: 'middle',
+    },
+    icon:{
+        width: '8px',
+        verticalAlign: 'middle',
+        marginRight: 4
+    },
+    grid:{
+        marginTop: '17px'
+    },
+    inline:{
+        display: 'inline'
+    },
+    input: {
+        width: '65%'
     }
 })
 
@@ -40,12 +59,14 @@ class UserRecipeDetails extends Component{
         editNotes: false
     }
 
+    // gets the recipe details using the recipe id that was sent over from UserPage
     componentDidMount(){
-        console.log(this.props.match.params.id);
         this.props.dispatch({ type: 'FETCH_ONE_RECIPE', payload: this.props.match.params.id});
     }
 
-    componentDidUpdate(oldProps){       
+    // Changing state to reflect any changes to the database
+    componentDidUpdate(oldProps, oldState){  
+        // if the data coming from the database has changed change the state as well 
         if(oldProps.data.setOneRecipe !== this.props.data.setOneRecipe){
             this.setState({
                 ingredients: this.props.data.setOneRecipe.ingredients,
@@ -53,35 +74,41 @@ class UserRecipeDetails extends Component{
                 notes: this.props.data.setOneRecipe.notes
             })
         }
+        if(oldState.ingredient === ''){
+            // this.setState({
+            //     ingredient: 
+            // })
+        }
     }
 
-
+    // sends the user back to the UserPage
     goToUserPage = () => {
-        this.props.history.push({ pathname: '/login' });
+        this.props.history.push({ pathname: '/userRecipes' });
     }
 
+    // saves the input if the user is adding ingredients, directions, or notes
     handleChange = (event, prop) => {
         this.setState({
             [prop]: event.target.value
         })
     }
-
-    editIngredients = () => {
-        this.setState({
-            editIngredients: !this.state.editIngredients
-        })
-    }
-
-    editDirections = () => {
-        this.setState({
-            editDirections: !this.state.editDirections
-        })
-    }
-
-    editNotes = () =>{
-        this.setState({
-            editNotes: !this.state.editNotes
-        })
+    // toggles between editing the each section and not editing
+    edit = (prop) => {
+        if(prop === "ingredient"){
+            this.setState({
+                editIngredients: !this.state.editIngredients
+            })
+        }
+        else if(prop === "direction"){
+            this.setState({
+                editDirections: !this.state.editDirections
+            })
+        }
+        else if(prop === "notes"){
+            this.setState({
+                editNotes: !this.state.editNotes
+            })
+        }
     }
 
     editIsTrue = (id) => {
@@ -100,11 +127,36 @@ class UserRecipeDetails extends Component{
             change: ''
         }
 
+
         if(type === "ingredient"){
+            if(this.state.ingredient === ''){
+                this.setState({
+                    edit: {
+                        isTrue: false
+                    }
+                })
+                return;
+            }
             changes.change = this.state.ingredient;
         }else if(type === "direction"){
+            if (this.state.direction === '') {
+                this.setState({
+                    edit: {
+                        isTrue: false
+                    }
+                })
+                return;
+            }
             changes.change = this.state.direction;
         } else if (type === "notes") {
+            if (this.state.notes === '') {
+                this.setState({
+                    edit: {
+                        isTrue: false
+                    }
+                })
+                return;
+            }
             changes.change = this.state.notes;
             this.setState({
                 editNotes: !this.state.editNotes
@@ -121,11 +173,6 @@ class UserRecipeDetails extends Component{
 
     removeIngredientListItem = (key) => {
         this.props.dispatch({type:"DELETE_ITEM", payload: {item: 'ingredient', key: key}});
-        let newList = this.state.ingredients;
-        newList.splice(key, 1);
-        this.setState({
-            ingredients: [...newList]
-        })
     }
 
     ingredientList = () => {
@@ -150,6 +197,7 @@ class UserRecipeDetails extends Component{
         this.props.dispatch({ type: "ADD_ITEM", payload: item });
         this.setState({
             directions: [...this.state.directions, this.state.direction],
+            direction: ''
         })
     }
 
@@ -188,49 +236,69 @@ class UserRecipeDetails extends Component{
 
         if(this.state.editIngredients){
             ingredients = (
-            <Box className={classes.items} border={1}>
+            <Box className={classes.items}>
                     <Typography variant="h5">Ingredients:</Typography>
-                <ol>
-                        {this.props.data.setOneRecipe.ingredients.map(item => {
-                        if(this.state.edit.isTrue && this.state.edit.key === item.id){
-                            return (
-                            <Box key={item.id}>
-                                <TextField onChange={event => this.handleChange(event, "ingredient")}
-                                        defaultValue={item.ingredient} />
-                                <Button onClick={() => this.editOne(item.id, "ingredient")}>Save Changes</Button>
-                            </Box>
-                            )
-                        }else{
-                            return ( <li key={item.id}>{item.ingredient}  
-                                 <EditOutlinedIcon fontSize="small" onClick={() => this.editIsTrue(item.id)} />
-                                 <RemoveCircleOutlineIcon fontSize="small" onClick={() => this.removeIngredientListItem(item.id)} />
-                             </li>)
-                        }
-                    })}
-                </ol>
+                    <Grid fluid className={classes.grid}> 
+                            {this.props.data.setOneRecipe.ingredients.map(item => {
+                            if(this.state.edit.isTrue && this.state.edit.key === item.id){
+                                return (
+                                <Box key={item.id}>
+                                    <Box className={classes.items} display="inline">
+                                        <TextField onChange={event => this.handleChange(event, "ingredient")}
+                                                defaultValue={item.ingredient} />
+                                    </Box>
+                                        <Box className={classes.editBtn} ml={2} display="inline">
+                                        <Button variant="outlined" onClick={() => this.editOne(item.id, "ingredient")}>Save Changes</Button>
+                                    </Box>
+                                </Box>
+                                )
+                            }else{
+                                return (
+                                    <Row between="xs">
+                                        <Col start='xs' xs={10} >
+                                            <FiberManualRecordIcon className={classes.icon}/>
+                                            <p className={classes.inline}>{item.ingredient}</p>
+                                        </Col>
+                                        <Col xs={1}>
+                                            <EditOutlinedIcon fontSize="small" onClick={() => this.editIsTrue(item.id)} />
+                                        </Col>
+                                        <Col xs={1}>
+                                            <RemoveCircleOutlineIcon  fontSize="small" onClick={() => this.removeIngredientListItem(item.id)} />
+                                        </Col>
+                                    </Row>
+                                )
+                            }
+                        })}
+                </Grid>
                 <Box>
                     <TextField onChange={event => this.handleChange(event, 'ingredient')}
-                        ref="ingredient"
+                        value={this.state.ingredient}
                         variant="standard"
                         label="Ingredient" />
-                    <Button onClick={this.ingredientList}>Add</Button>
+                        <Button variant="outlined" onClick={this.ingredientList}>Add</Button>
                 </Box>
                     <Box className={classes.editBtn}>
-                    <Button onClick={this.editIngredients}>Save</Button>
+                        <Button variant="outlined" onClick={() => this.edit("ingredient")}>Save</Button>
                 </Box>
             </Box>)
         }else{
             ingredients = (
-                <Box className={classes.items} border={1} borderColor="grey">
+                <Box className={classes.items} mt={2}>
                     <Typography variant="h5">Ingredients:</Typography>
-                    <ul>
+                    <Grid fluid className={classes.grid}> 
                       {this.state.ingredients.map(item => {
-                          return(<li key={item.id}>{item.ingredient}</li>)
+                          return(
+                              <Row between="xs">
+                                  <Col start='xs' xs={10} >
+                                      <FiberManualRecordIcon className={classes.icon} />
+                                      {item.ingredient}
+                                  </Col>
+                              </Row>
+                          )
                       })}
-                      
-                    </ul>
+                    </Grid>
                     <Box className={classes.editBtn}>
-                        <Button onClick={this.editIngredients}>edit</Button>
+                        <Button variant="outlined" onClick={() => this.edit("ingredient")}>edit</Button>
                     </Box>
                 </Box>)
         }
@@ -241,47 +309,68 @@ class UserRecipeDetails extends Component{
             directions = (
                 <Box className={classes.items}>
                     <Typography variant="h5">Directions:</Typography>
-                    <ol>
-                        {this.state.directions.map(item => {
+                    <Grid fluid>
+                        {this.state.directions.map((item, i) => {
                             if (this.state.edit.isTrue && this.state.edit.key === item.id) {
                                 return (
                                     <Box key={item.id}>
-                                        <TextField onChange={event => this.handleChange(event, "direction")}
-                                            defaultValue={item.direction} />
-                                        <Button onClick={() => this.editOne(item.id, "direction")}>Save Changes</Button>
+                                        <Box display="inline" mr={1}>
+                                            <TextField onChange={event => this.handleChange(event, "direction")}
+                                                className={classes.input}
+                                                multiline
+                                                defaultValue={item.direction} />
+                                        </Box>
+                                        <Box display="inline" className={classes.editBtn}>
+                                            <Button variant="outlined" onClick={() => this.editOne(item.id, "direction")}>Save Changes</Button>
+                                        </Box>
                                     </Box>
                                 )
                             } else {
-                                return (<li key={item.id}>{item.direction}
-                                    <EditOutlinedIcon fontSize="small" onClick={() => this.editIsTrue(item.id)} />
-                                    <RemoveCircleOutlineIcon fontSize="small" onClick={() => this.removeDirectionListItem(item.id)} />
-                                </li>)
-                            }
-                        })}
-                    </ol>
+                                return (
+                                    <Box mb={1}>
+                                        <Row between="xs" className={classes.grid}>
+                                            <Col xs={10}>
+                                                <p className={classes.inline}>{i + 1}. </p>
+                                                <p className={classes.inline}>{item.direction}</p>
+                                            </Col>
+                                            <Col xs={1}>
+                                                <EditOutlinedIcon fontSize="small" onClick={() => this.editIsTrue(item.id)} />
+                                            </Col>
+                                            <Col xs={1}>
+                                                <RemoveCircleOutlineIcon fontSize="small" onClick={() => this.removeDirectionListItem(item.id)} />
+                                            </Col>
+                                        </Row>
+                                    </Box>)}})}
+                    </Grid>
                     <Box>
-
                         <TextField onChange={event => this.handleChange(event, 'direction')}
                             ref="direction"
                             variant="standard"
                             label="Direction" />
-                        <Button onClick={this.directionList}>Add</Button>
+                        <Button variant="outlined" onClick={this.directionList}>Add</Button>
                     </Box>
                     <Box className={classes.editBtn}>
-                        <Button onClick={this.editDirections}>Save</Button>
+                        <Button variant="outlined" className={classes.editBtn} onClick={() => this.edit("direction")}>Save</Button>
                     </Box>
                 </Box>)
         }else{
             directions =(
                 <Box className={classes.items}>
                     <Typography variant="h5">Directions:</Typography>
-                <ol>
-                    {this.state.directions.map(step => (
-                        <li key={step.id}>{step.direction}</li>
+                <Grid fluid>
+                    {this.state.directions.map((step, i) => (
+                        <Box mb={1}>
+                            <Row className={classes.grid}>
+                                <Col xs={12}>
+                                    <p className={classes.inline}>{i + 1}. </p>
+                                    <p className={classes.inline}>{step.direction}</p>
+                                </Col>
+                            </Row>
+                        </Box>
                     ))}
-                </ol>
+                </Grid>
                     <Box className={classes.editBtn}>
-                    <Button onClick={this.editDirections}>edit</Button>
+                        <Button variant="outlined" onClick={() => this.edit("direction")}>edit</Button>
                 </Box>
             </Box>)
         }
@@ -298,8 +387,8 @@ class UserRecipeDetails extends Component{
                     variant="outlined"
                     multiline={true}
                     defaultValue={this.state.notes} />
-                    <Box className={classes.editBtn}>
-                        <Button onClick={() => this.editOne(this.props.data.setOneRecipe.id, "notes")}>SAVE</Button>
+                    <Box className={classes.editBtn} mt={1}>
+                        <Button variant="outlined" onClick={() => this.editOne(this.props.data.setOneRecipe.id, "notes")}>SAVE</Button>
                     </Box>
             </Box>
                 )
@@ -309,7 +398,7 @@ class UserRecipeDetails extends Component{
                     <Typography variant="h5">NOTES:</Typography>
                     <Typography className='notes' ml={2}>{this.state.notes}</Typography>
                     <Box className={classes.editBtn}>
-                        <Button onClick={this.editNotes}>edit</Button>
+                        <Button variant="outlined" onClick={() => this.edit("notes")}>edit</Button>
                     </Box>
                 </Box>
                 )

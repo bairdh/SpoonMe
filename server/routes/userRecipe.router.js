@@ -1,10 +1,10 @@
 const express = require('express');
 const pool = require('../modules/pool');
 const router = express.Router();
-const axios = require('axios');
+const { rejectUnauthenticated } = require('../modules/authentication-middleware');
 
 // using async to send multiple queries to the database
-router.post('/', async (req, res) => {
+router.post('/', rejectUnauthenticated, async (req, res) => {
     console.log(`In sendRecipe POST`);
     let recipe = req.body.recipe;
         const sendRecipe = await pool.connect();
@@ -17,7 +17,7 @@ router.post('/', async (req, res) => {
             // GETTING Recipe id
             const recipeId = recipeResult.rows[0].id;
             await Promise.all(recipe.extendedIngredients.map(item => {
-                let = subQuery = `INSERT INTO ingredient("ingredient", "recipe_id") VALUES($1, $2);`;
+                let subQuery = `INSERT INTO ingredient("ingredient", "recipe_id") VALUES($1, $2);`;
                 const result = sendRecipe.query(subQuery, [item.original, recipeId]);
             }));
             await Promise.all(recipe.analyzedInstructions[0].steps.map(item => {
@@ -36,7 +36,7 @@ router.post('/', async (req, res) => {
 });
 
 
-router.get('/', (req,res) => {
+router.get('/', rejectUnauthenticated, (req,res) => {
     console.log(`In GET USER RECIPES! Ive Changed`);
     let userId = req.user.id;
     let query = `
@@ -58,7 +58,7 @@ router.get('/', (req,res) => {
     })
 });
 
-router.get(`/search/:search`, (req,res) =>{
+router.get(`/search/:search`, rejectUnauthenticated, (req,res) =>{
     console.log(`In GET search`);
     let userId = req.user.id;
     let search = req.params.search;
@@ -81,7 +81,7 @@ router.get(`/search/:search`, (req,res) =>{
     });
 })
 
-router.get('/:id', (req, res) =>{
+router.get('/:id', rejectUnauthenticated, (req, res) =>{
     console.log('In get One Recipe!')
 
     let query = `
@@ -107,7 +107,7 @@ router.get('/:id', (req, res) =>{
     })
 })
 
-router.post('/create', async (req, res) => {
+router.post('/create', rejectUnauthenticated, async (req, res) => {
     console.log(`In create Recipe`);
     
     let recipe = req.body;
@@ -139,7 +139,7 @@ router.post('/create', async (req, res) => {
     }
 })
 
-router.put(`/deleteItem/:item/:id`, (req, res) => {
+router.put(`/deleteItem/:item/:id`, rejectUnauthenticated, (req, res) => {
     let id = req.params.id;
     let item = req.params.item;
     let query;
@@ -167,7 +167,8 @@ router.put(`/deleteItem/:item/:id`, (req, res) => {
         res.sendStatus(500);
     }) 
 })
-router.post('/addItem', (req, res) =>{
+
+router.post('/addItem', rejectUnauthenticated, (req, res) =>{
     console.log(`In Add Item:`, req.body);
     
     let item = req.body.item;
@@ -200,7 +201,7 @@ router.post('/addItem', (req, res) =>{
     })
 })
 
-router.put('/edit', (req, res) =>{
+router.put('/edit', rejectUnauthenticated, (req, res) =>{
     console.log(`In Edit`);
     let id = req.body.id
     let type = req.body.type;
@@ -236,7 +237,7 @@ router.put('/edit', (req, res) =>{
     })
 })
 
-router.delete(`/deleteRecipe/:id`, (req,res) => {
+router.delete(`/deleteRecipe/:id`, rejectUnauthenticated, (req,res) => {
     let id = req.params.id;
     let query = `
     DELETE FROM recipe

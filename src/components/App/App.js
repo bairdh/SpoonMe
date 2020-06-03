@@ -3,33 +3,25 @@ import {HashRouter as Router, Route,Redirect,Switch,} from 'react-router-dom';
 import {connect} from 'react-redux';
 import ProtectedRoute from '../ProtectedRoute/ProtectedRoute'
 
+// Components
 import Nav from '../Nav/Nav';
 import Footer from '../Footer/Footer';
-import AboutPage from '../AboutPage/AboutPage';
 import UserPage from '../UserPage/UserPage';
-import InfoPage from '../InfoPage/InfoPage';
 import Search from '../Search/Search';
-
-import './App.css';
 import RecipeDetails from '../RecipeDetails.js/RecipeDetails';
 import UserRecipeDetails from '../UserRecipeDetails/UserRecipeDetails';
 import CreateRecipe from '../CreateRecipe/CreateRecipe';
-import { withStyles, Box } from '@material-ui/core';
 
+// Styling
+import './App.css';
+import { Box } from '@material-ui/core';
 
-  const styles = theme => ({
-    root: {
-     
-    }
-  })
 
 class App extends Component {
   componentDidMount () {
     this.props.dispatch({type: 'FETCH_USER'})
   }
-
   render() {
-    const {classes} = this.props;
     return (
       <Router>
         <Box className='appContainer'>
@@ -50,7 +42,7 @@ class App extends Component {
             Even though it seems like they are different pages, the user is always on localhost:3000/home */}
             <ProtectedRoute
               exact
-              path="/login"
+              path="/userRecipes"
               component={UserPage}
             />
             <Route
@@ -74,4 +66,4 @@ class App extends Component {
   )}
 }
 
-export default connect() (withStyles(styles)(App));
+export default connect()(App);

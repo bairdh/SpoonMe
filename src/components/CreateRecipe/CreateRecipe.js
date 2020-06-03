@@ -40,6 +40,9 @@ class CreateRecipe extends Component{
     }
 
     ingredientList = () => {
+
+
+
         this.setState({
            ingredients: [...this.state.ingredients, this.state.ingredient],
         })
@@ -60,6 +63,15 @@ class CreateRecipe extends Component{
     }
 
     editOneDirection = (key) => {
+        if(this.state.direction === ''){
+            this.setState({
+                edit: {
+                    isTrue: false
+                }
+            })
+            return;
+        }
+
         // create new copy of direction list 
         // but cut out the old step and replace it with the new one
         const newList = this.state.directions
@@ -115,7 +127,7 @@ class CreateRecipe extends Component{
     }
     
     goToUserPage = () => {
-        this.props.history.push({pathname:'/login'});
+        this.props.history.push({ pathname:'/userRecipes'});
     }
     render(){
         const {classes} = this.props;

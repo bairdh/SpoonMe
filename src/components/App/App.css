@@ -8,16 +8,14 @@ body {
     background-attachment: fixed;
 }
 
-.appContainer{
-    /* padding-bottom:calc(100vh - 540px); */
-}
-
+/* Used in LoginPage and RegisterPage */
 .alert {
     color: #d62c2c;
     margin: 5%;
     text-align: center;
 }
 
+/* Used in Search, UserPage */
 .card{
     margin: 2%;
     display: inline-block;
@@ -25,16 +23,16 @@ body {
     min-height: 273px;
     max-height: 273px;
 }
-
+/* Used in Search, UserPage */
 .card > img{
     max-height: 185px;
 }
-
+/* Used in RecipeDetails, UserRecipeDetails, and CreateRecipe */
 .detailImage{
     max-width: 80%;
     max-height: 500px;
 }
-
+/* Used in UserRecipeDetails */
 .notes{
     white-space: pre-line;
 }
