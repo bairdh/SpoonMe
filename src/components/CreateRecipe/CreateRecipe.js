@@ -1,14 +1,18 @@
 import React, { Component } from "react";
+import { connect } from "react-redux";
+
+
+// Styling
 import { Box, Typography, TextField, Button, withStyles } from "@material-ui/core";
+import { Grid, Row, Col } from 'react-flexbox-grid';
+import FiberManualRecordIcon from '@material-ui/icons/FiberManualRecord';
 import RemoveCircleOutlineIcon from '@material-ui/icons/RemoveCircleOutline';
 import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
-import { connect } from "react-redux";
 
 const styles = theme =>({
     mainContainer:{
         textAlign: 'center',
-        maxWidth: '60vw',
-        minWidth: '445px',
+        maxWidth: '70vw',
         borderRadius: 10,
         background: 'rgba(255, 255, 255, 0.678)'
     },
@@ -17,6 +21,14 @@ const styles = theme =>({
     },
     btn:{
         textAlign: 'right'
+    },
+    icon: {
+        width: '8px',
+        verticalAlign: 'middle',
+        marginRight: 4
+    },
+    display:{
+        display:"inline"
     }
 });
 
@@ -40,9 +52,6 @@ class CreateRecipe extends Component{
     }
 
     ingredientList = () => {
-
-
-
         this.setState({
            ingredients: [...this.state.ingredients, this.state.ingredient],
         })
@@ -51,6 +60,12 @@ class CreateRecipe extends Component{
     directionList = () => {
         this.setState({
            directions: [...this.state.directions, this.state.direction],
+        })
+    }
+
+    notes = (event) => {
+        this.setState({
+            notes: event.target.value
         })
     }
 
@@ -123,7 +138,8 @@ class CreateRecipe extends Component{
             notes: this.state.notes
         };
         this.props.dispatch({type:'CREATE_RECIPE', payload: recipe});
-        this.props.history.push({pathname: '/login'});
+        this.props.history.push({pathname: '/userRecipes'});
+        this.props.dispatch({ type: 'FETCH_USER_RECIPES' });
     }
     
     goToUserPage = () => {
@@ -148,7 +164,6 @@ class CreateRecipe extends Component{
                 <Box className={classes.mainContainer} mx="auto" boxShadow={3} p={2}>
                     <Typography variant="h3">Create Recipe</Typography>
                     <TextField onChange={event => this.handleChange(event, "name")} variant="standard"
-                       
                         fullWidth={true}
                         label="Name"/>
                         <Box mt={3}>
@@ -159,9 +174,9 @@ class CreateRecipe extends Component{
                         fullWidth={true}
                         label="Image"/>
                     <Box py={4}>
-                        <Box className={classes.items}>
+                        <Box className={classes.items} mb={3}>
                             <Typography>Ingredients:</Typography>
-                            <ul>
+                            <Grid fluid>
                                 {this.state.ingredients.map((item, i) => {
                                     if (this.state.edit.isTrue && this.state.edit.key === i) {
                                         return (<Box key={i}>
@@ -171,12 +186,22 @@ class CreateRecipe extends Component{
                                         </Box>)
                                     }
                                     else {
-                                        return (<li key={i}>{item}
-                                            <EditOutlinedIcon fontSize="small" onClick={() => this.edit(i)} />
-                                            <RemoveCircleOutlineIcon fontSize="small" onClick={() => this.removeIngredientListItem(i)} /> </li>)
-                                    }
+                                        return (
+                                            <Row between="xs" key={i}>
+                                                <Col start="xs" xs={10}>
+                                                    <FiberManualRecordIcon className={classes.icon}/>
+                                                    <p className={classes.display}>{item}</p>
+                                                </Col>
+                                                <Col xs={1}>
+                                                    <EditOutlinedIcon fontSize="small" onClick={() => this.edit(i)} />
+                                                </Col>
+                                                <Col xs={1}>
+                                                    <RemoveCircleOutlineIcon fontSize="small" onClick={() => this.removeIngredientListItem(i)} />
+                                                </Col>
+                                            </Row>
+                                            )}
                                 })}
-                            </ul>
+                            </Grid>
                         </Box> {/* End Ingredient List */}
                         <TextField onChange={event => this.handleChange(event, "ingredient")}
                             fullWidth={true}
@@ -189,9 +214,9 @@ class CreateRecipe extends Component{
                         </Box>
                     </Box> {/* End Ingredient Box */} 
                     <Box>
-                        <Box className={classes.items}>
+                        <Box className={classes.items} mb={4}>
                             <Typography>Directions:</Typography>
-                            <ol>
+                            <Grid>
                                 {this.state.directions.map((step, i) => {
                                     if(this.state.edit.isTrue && this.state.edit.key === i){
                                         return( <Box key={i}>
@@ -202,13 +227,22 @@ class CreateRecipe extends Component{
                                         </Box>)
                                     }
                                     else{
-                                        return( <li key={i}>{step} 
-                                        <EditOutlinedIcon fontSize="small" onClick={() => this.edit(i)}/>
-                                            <RemoveCircleOutlineIcon fontSize="small" onClick={() => this.removeDirectionListItem(i)}/> </li>)
-                                    }
-
+                                        return(
+                                                <Row between="xs" key={i}>
+                                                    <Col start="xs" xs={10}>
+                                                        <p className={classes.display}>{i + 1}. </p>
+                                                        <p className={classes.display}>{step}</p>
+                                                    </Col>
+                                                    <Col xs={1}>
+                                                        <EditOutlinedIcon fontSize="small" onClick={() => this.edit(i)} />
+                                                    </Col>
+                                                    <Col xs={1}>
+                                                        <RemoveCircleOutlineIcon fontSize="small" onClick={() => this.removeDirectionListItem(i)} />
+                                                    </Col>
+                                                </Row>
+                                            )}
                                 })}
-                            </ol>
+                            </Grid>
                         </Box> {/* End Direction List */}
                         <TextField onChange={event => this.handleChange(event, "direction")} 
                             variant="outlined"
@@ -224,6 +258,7 @@ class CreateRecipe extends Component{
                     </Box>  {/* End Direction Box */}
 
                     <TextField  variant="outlined"
+                            onChange={(event) => this.notes(event)}
                             multiline={true}
                             fullWidth={true}
                             label="Notes"/>

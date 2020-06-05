@@ -27,6 +27,12 @@ class UserPage extends Component {
     this.props.dispatch({type: 'FETCH_USER_RECIPES'});
   };
 
+  componentDidUpdate(oldProps){
+    if(oldProps.data.setUserRecipes !== this.props.setUserRecipes){
+      // this.props.dispatch({ type: 'FETCH_USER_RECIPES' });
+    }
+  }
+
   // sends the user to the retails page for the recipes they click on
   sendToUserRecipeDetails = (recipe) => {
     this.props.history.push(`/userRecipeDetails/${recipe.id}`)
@@ -46,7 +52,15 @@ class UserPage extends Component {
 
   // sending a dispatch to get the recipe with the search term
   sendSearch = () =>{
+    if(this.state.search === ''){
+      this.props.dispatch({ type: 'FETCH_USER_RECIPES' });
+      return;
+    }
     this.props.dispatch({type: 'GET_SEARCH', payload: this.state.search});
+
+    this.setState({
+      search: ''
+    })
   }
 
     render(){  
@@ -59,7 +73,7 @@ class UserPage extends Component {
           container
           spacing={2}>
           <Grid item className={classes.search} display="inline">
-              <TextField label="user search" onChange={event => this.handleSearch(event)}/>
+              <TextField label="User Search" value={this.state.search} onChange={event => this.handleSearch(event)}/>
             <Box ml={1} mt={1} display="inline">
               <Button variant="outlined" onClick={this.sendSearch}>Search</Button>
             </Box>

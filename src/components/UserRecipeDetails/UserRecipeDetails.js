@@ -1,13 +1,13 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import ReactDOM from 'react-dom';
-import { Grid, Row, Col } from 'react-flexbox-grid';
 
 // Styling
 import { Box, Typography, Button, TextField, withStyles } from "@material-ui/core";
 import RemoveCircleOutlineIcon from '@material-ui/icons/RemoveCircleOutline';
 import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
 import FiberManualRecordIcon from '@material-ui/icons/FiberManualRecord';
+import { Grid, Row, Col } from 'react-flexbox-grid';
 import swal from "sweetalert";
 import '../App/App.css';
 
@@ -38,7 +38,7 @@ const styles = theme => ({
         display: 'inline'
     },
     input: {
-        width: '65%'
+        width: 400
     }
 })
 
@@ -221,7 +221,7 @@ class UserRecipeDetails extends Component{
             if(willDelete){
                 this.props.dispatch({type: "DELETE_RECIPE", payload: this.props.data.setOneRecipe.id});
                 swal("This recipe has been deleted!", {icon: "success"});
-                this.props.history.push(`/login`)
+                this.props.history.push(`/userRecipes`)
 
             }else{
                 swal("Recipe not deleted!");
@@ -272,7 +272,6 @@ class UserRecipeDetails extends Component{
                 </Grid>
                 <Box>
                     <TextField onChange={event => this.handleChange(event, 'ingredient')}
-                        value={this.state.ingredient}
                         variant="standard"
                         label="Ingredient" />
                         <Button variant="outlined" onClick={this.ingredientList}>Add</Button>
@@ -342,12 +341,15 @@ class UserRecipeDetails extends Component{
                                         </Row>
                                     </Box>)}})}
                     </Grid>
-                    <Box>
-                        <TextField onChange={event => this.handleChange(event, 'direction')}
+                    <Box display="inline">
+                        <TextField className={classes.input} onChange={event => this.handleChange(event, 'direction')}
                             ref="direction"
                             variant="standard"
+                            multiline={true}
                             label="Direction" />
-                        <Button variant="outlined" onClick={this.directionList}>Add</Button>
+                    </Box>
+                    <Box display="inline">
+                        <Button variant="outlined" mt={1} onClick={this.directionList}>Add</Button>
                     </Box>
                     <Box className={classes.editBtn}>
                         <Button variant="outlined" className={classes.editBtn} onClick={() => this.edit("direction")}>Save</Button>

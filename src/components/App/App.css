@@ -36,3 +36,6 @@ body {
 .notes{
     white-space: pre-line;
 }
+.width{
+    max-width: 400px;
+}

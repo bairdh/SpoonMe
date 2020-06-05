@@ -3,7 +3,7 @@ import { put, takeLatest } from 'redux-saga/effects';
 
 
 function* saveUserRecipe(action) {
-    yield axios.post('/api/userRecipe/', action.payload);
+    yield axios.post('/api/userRecipe/');
 }
 
 function* fetchUserRecipes(action){
@@ -18,12 +18,13 @@ function* fetchOneRecipe(action){
 
 function* createRecipe(action){
     yield axios.post(`/api/userRecipe/create`, action.payload);
+    yield put({type: 'FETCH_USER_RECIPES'});
+
 }
 
 function* editUserRecipe(action){
     let res = yield axios.put('/api/userRecipe/edit', action.payload);
     yield put({ type: "FETCH_ONE_RECIPE", payload: res.data.recipe_id })
-
 }
 
 function* deleteItem(action){

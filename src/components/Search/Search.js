@@ -17,12 +17,13 @@ const styles = theme => ({
 class Search extends Component{
 
     componentDidMount(){
+        this.props.dispatch({type:'FETCH_RANDOM_RECIPES'});
+
     }
     
     // fetches the random recipes from the API
     // Will switch to componentDidMount for production
     handleClick =() =>{
-        this.props.dispatch({type:'FETCH_RANDOM_RECIPES'});
     }
 
     sendToDetails = (recipe) =>{
@@ -34,7 +35,7 @@ class Search extends Component{
         return(
             <Box mx="auto"> 
                 {/* Button will be removed for production*/}
-                <Button variant="outlined" onClick={this.handleClick}>Test API</Button>
+                {/* <Button variant="outlined" onClick={this.handleClick}>Test API</Button> */}
                 <Box mx="auto" className={classes.mainContainer}>
                     {/* mapping through the list of recipes received from the API 
                         And displaying the title and image in a card*/}
