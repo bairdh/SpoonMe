@@ -37,6 +37,10 @@ class RecipeDetails extends Component{
         });
     }
 
+    goToSearch = ()=>{
+        this.props.history.push({ pathname: '/home' });
+    }
+
     render(){
         const {classes} = this.props;
         let saveButton;
@@ -52,6 +56,9 @@ class RecipeDetails extends Component{
         
         return( 
         <Box mb={4}>
+            <Box>
+                <Button onClick={this.goToSearch}>Back to Recipes</Button>
+            </Box>
             <Box className={classes.saveBtn} m={2}>
                 {saveButton}
             </Box>        

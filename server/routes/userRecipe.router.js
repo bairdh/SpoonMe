@@ -5,8 +5,8 @@ const { rejectUnauthenticated } = require('../modules/authentication-middleware'
 
 // using async to send multiple queries to the database
 router.post('/', rejectUnauthenticated, async (req, res) => {
-    console.log(`In sendRecipe POST`);
     let recipe = req.body.recipe;
+    console.log(`In sendRecipe POST`, recipe.title);
         const sendRecipe = await pool.connect();
         try{
             await sendRecipe.query('BEGIN');

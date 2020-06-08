@@ -3,7 +3,7 @@ import { put, takeLatest } from 'redux-saga/effects';
 
 
 function* saveUserRecipe(action) {
-    yield axios.post('/api/userRecipe/');
+    yield axios.post('/api/userRecipe/', action.payload);
 }
 
 function* fetchUserRecipes(action){
